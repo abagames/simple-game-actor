@@ -1,0 +1,27 @@
+{
+  "name": "simple-game-actor",
+  "version": "1.0.0",
+  "description": "Simple actor and actor pool for game objects",
+  "main": "build/index.js",
+  "typings": "typings/index.d.ts",
+  "devDependencies": {
+    "awesome-typescript-loader": "^5.2.0",
+    "html-webpack-plugin": "^3.2.0",
+    "typescript": "^3.0.1",
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.1.0",
+    "webpack-serve": "^2.0.2"
+  },
+  "scripts": {
+    "start": "webpack-serve --content docs",
+    "build": "webpack",
+    "build_sample": "webpack --env.sample"
+  },
+  "author": "abagames",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abagames/simple-game-actor.git"
+  },
+  "homepage": "https://github.com/abagames/simple-game-actor"
+}
