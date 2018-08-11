@@ -1,3 +1,5 @@
+import math from "./math";
+
 export default class Vector {
   x = 0;
   y = 0;
@@ -41,15 +43,40 @@ export default class Vector {
     return this;
   }
 
-  clamp(xMin: number, xMax: number, yMin: number, yMax: number) {
-    this.x = Math.max(xMin, Math.min(this.x, xMax));
-    this.y = Math.max(yMin, Math.min(this.y, yMax));
+  clamp(xLow: number, xHigh: number, yLow: number, yHigh: number) {
+    this.x = math.clamp(this.x, xLow, xHigh);
+    this.y = math.clamp(this.y, yLow, yHigh);
+    return this;
+  }
+
+  addAngle(angle: number, value: number) {
+    this.x += Math.cos(angle) * value;
+    this.y += Math.sin(angle) * value;
+    return this;
+  }
+
+  swapXy() {
+    const t = this.x;
+    this.x = this.y;
+    this.y = t;
     return this;
   }
 
   normalize() {
     this.div(this.length);
     return this;
+  }
+
+  getAngle(to: Vector = null) {
+    return to == null
+      ? Math.atan2(this.y, this.x)
+      : Math.atan2(to.y - this.y, to.x - this.x);
+  }
+
+  distanceTo(to: Vector) {
+    const ox = this.x - to.x;
+    const oy = this.y - to.y;
+    return Math.sqrt(ox * ox + oy * oy);
   }
 
   get length() {
