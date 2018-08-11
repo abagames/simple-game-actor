@@ -12,7 +12,7 @@ export default class Vector {
     if (x instanceof Vector) {
       this.x = x.x;
       this.y = x.y;
-      return;
+      return this;
     }
     this.x = x;
     this.y = y == null ? x : y;
@@ -64,6 +64,16 @@ export default class Vector {
 
   normalize() {
     this.div(this.length);
+    return this;
+  }
+
+  rotate(angle: number) {
+    if (angle === 0) {
+      return this;
+    }
+    const tx = this.x;
+    this.x = tx * Math.cos(angle) - this.y * Math.sin(angle);
+    this.y = tx * Math.sin(angle) + this.y * Math.cos(angle);
     return this;
   }
 

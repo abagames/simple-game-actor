@@ -1,11 +1,15 @@
 import { spawn, update } from "..";
-import { Actor } from "./util/actor";
+import { Actor, Rect } from "./util/actor";
 import { init } from "./util/game";
 import * as pointer from "./util/pointer";
 import Vector from "./util/vector";
 import math from "./util/math";
 
 function player(a: Actor & { isOnWall: boolean }) {
+  a.setRect(5, 5);
+  a.addRect(new Rect(3, 3, "black", 0, -5));
+  a.addRect(new Rect(3, 3, "black", -4, -6, 0.2));
+  a.addRect(new Rect(3, 3, "black", 4, -6, 0.2));
   a.pos.set(50, 20);
   a.isOnWall = false;
   const sb = new Vector(0, -1);
@@ -29,7 +33,7 @@ function player(a: Actor & { isOnWall: boolean }) {
 }
 
 function wall(a: Actor, x, y) {
-  a.size.set(70, 5);
+  a.setRect(70, 5);
   a.pos.set(x, y);
 }
 
