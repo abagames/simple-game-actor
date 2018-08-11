@@ -115,7 +115,7 @@ export class Pool {
 }
 
 export const pool = new Pool();
-export const actor = new Actor();
+export const updaterPool = new Pool();
 
 export function spawn(initFunc: (actor: AnyActor, ...args) => void, ...args) {
   const actor: AnyActor = new actorClass();
@@ -123,8 +123,20 @@ export function spawn(initFunc: (actor: AnyActor, ...args) => void, ...args) {
   this.pool.add(actor);
 }
 
+export function update(
+  updateFunc: (updater: Updater, actor: AnyActor) => void,
+  interval = 1
+) {
+  updaterPool.add(new Updater(updateFunc, interval, null));
+}
+
 let actorClass = Actor;
 
 export function setActorClass(_actorClass) {
   actorClass = _actorClass;
+}
+
+export function updateFrame() {
+  updaterPool.updateFrame();
+  pool.updateFrame();
 }

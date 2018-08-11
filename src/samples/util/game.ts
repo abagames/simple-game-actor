@@ -14,5 +14,5 @@ export function init() {
 function update() {
   requestAnimationFrame(update);
   screen.clear();
-  sga.pool.updateFrame();
+  sga.updateFrame();
 }

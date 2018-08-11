@@ -1,6 +1,6 @@
-import { spawn } from "..";
+import { spawn, update } from "..";
 import { Actor } from "./util/actor";
-import { init } from "./util/index";
+import { init } from "./util/game";
 
 function player(a: Actor) {
   a.pos.set(10, 20);
