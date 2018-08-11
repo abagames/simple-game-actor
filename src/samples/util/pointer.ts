@@ -15,12 +15,14 @@ let isInitialized = false;
 let padding: Vector;
 let prevPos: Vector;
 let isResettingTargetPos = false;
+let onPointerUp: Function;
 
 export function init(
   _screen: HTMLElement,
   _pixelSize: Vector,
   _padding: Vector = new Vector(),
-  onTouchStart: Function = null
+  onTouchStart: Function = null,
+  _onPointerUp: Function = null
 ) {
   screen = _screen;
   pixelSize = new Vector(
@@ -28,6 +30,7 @@ export function init(
     _pixelSize.y + _padding.y * 2
   );
   padding = _padding;
+  onPointerUp = _onPointerUp;
   document.addEventListener("mousedown", e => {
     onDown(e.pageX, e.pageY);
   });
@@ -128,4 +131,7 @@ function onMove(x, y) {
 
 function onUp(e) {
   isDown = false;
+  if (onPointerUp != null) {
+    onPointerUp();
+  }
 }

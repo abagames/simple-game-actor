@@ -13,6 +13,7 @@ export function init() {
 
 function update() {
   requestAnimationFrame(update);
+  pointer.update();
   screen.clear();
   sga.updateFrame();
 }
