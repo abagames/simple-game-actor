@@ -71,7 +71,7 @@ function updateScene() {
     beginTitle();
   }
   if (scene === "title") {
-    text.draw(title, 50, 40, { scale: 2 });
+    text.draw(title, 50, 38, { scale: 2 });
   } else if (scene === "gameOver") {
     text.draw("GAME OVER", 50, 45);
   }

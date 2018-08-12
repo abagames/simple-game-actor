@@ -61,6 +61,22 @@ export function draw(
   const align = options.align || "center";
   const style = options.style || "black";
   const scale = options.scale || 1;
+  const lines = str.split("\n");
+  let ly = y;
+  lines.forEach(l => {
+    drawLine(l, x, ly, align, style, scale);
+    ly += 6 * scale;
+  });
+}
+
+export function drawLine(
+  str: string,
+  x: number,
+  y: number,
+  align: "center" | "left" | "right",
+  style: string,
+  scale: number
+) {
   let lw = 5 * scale;
   let lx = x;
   if (align === "left") {

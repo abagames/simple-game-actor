@@ -11,7 +11,8 @@ import math from "./util/math";
 let score = 0;
 
 init(
-  "JUMP",
+  `BOARD
+SURF`,
   () => {
     score = 0;
     sss.playBgm();
