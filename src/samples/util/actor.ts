@@ -2,7 +2,7 @@ import * as sga from "../..";
 import * as screen from "./screen";
 import Vector from "./vector";
 
-const removePaddingRatio = 0.25;
+const removePaddingRatio = 0.5;
 
 export class Actor extends sga.Actor {
   pos = new Vector();
@@ -12,8 +12,20 @@ export class Actor extends sga.Actor {
   angle = 0;
   rects: Rect[] = [];
 
-  setRect(width = 5, height = 5, color = "black", offsetX = 0, offsetY = 0) {
-    this.addRect(new Rect(width, height, color, offsetX, offsetY));
+  setRect(
+    width = 5,
+    height = 5,
+    options: {
+      color?: string;
+      offset?: { x?: number; y?: number };
+    } = {
+      color: "black",
+      offset: { x: 0, y: 0 }
+    }
+  ) {
+    this.addRect(
+      new Rect(width, height, { color: options.color, offset: options.offset })
+    );
   }
 
   addRect(rect: Rect) {
@@ -24,12 +36,12 @@ export class Actor extends sga.Actor {
     return this.rects.some(r => other.rects.some(or => r.testColliding(or)));
   }
 
-  getCollidings(name: string = null) {
+  getCollidings(name?: string) {
     const actors = this.pool.get(name) as Actor[];
     return actors.filter(a => this.testColliding(a));
   }
 
-  getColliding(name: string = null) {
+  getColliding(name?: string) {
     const actors = this.pool.get(name) as Actor[];
     for (let a of actors) {
       if (this.testColliding(a)) {
@@ -39,13 +51,16 @@ export class Actor extends sga.Actor {
     return false;
   }
 
-  stepBack(name: string = null, angleVector: Vector = null) {
+  stepBack(name?: string | Actor, angleVector?: Vector) {
     if (angleVector == null) {
       angleVector = new Vector().set(this.prevPos).sub(this.pos);
     }
     angleVector.normalize().div(2);
     for (let i = 0; i < 99; i++) {
-      if (!this.getColliding(name)) {
+      if (
+        (typeof name === "string" && !this.getColliding(name)) ||
+        (name instanceof Actor && !this.testColliding(name))
+      ) {
         break;
       }
       this.pos.add(angleVector);
@@ -88,15 +103,20 @@ export class Rect {
   constructor(
     width = 5,
     height = 5,
-    color = "black",
-    offsetX = 0,
-    offsetY = 0,
-    springRatio = null
+    options: {
+      color?: string;
+      offset?: { x?: number; y?: number };
+      springRatio?: number;
+    } = {
+      color: "black",
+      offset: { x: 0, y: 0 },
+      springRatio: undefined
+    }
   ) {
     this.size.set(width, height);
-    this.offset.set(offsetX, offsetY);
-    this.color = color;
-    this.springRatio = springRatio;
+    this.offset.set(options.offset.x, options.offset.y);
+    this.color = options.color;
+    this.springRatio = options.springRatio;
   }
 
   testColliding(other: Rect) {
