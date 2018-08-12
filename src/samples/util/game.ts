@@ -35,11 +35,13 @@ export function init(
     sss.resumeAudioContext
   );
   sga.setActorClass(Actor);
-  if (_initFunc != null) {
-    _initFunc();
-  }
-  beginTitle();
-  update();
+  window.addEventListener("load", () => {
+    if (_initFunc != null) {
+      _initFunc();
+    }
+    beginTitle();
+    update();
+  });
 }
 
 export function endGame() {

@@ -8,6 +8,35 @@ import * as text from "./util/text";
 import Vector from "./util/vector";
 import math from "./util/math";
 
+let score = 0;
+
+init(
+  "JUMP",
+  () => {
+    score = 0;
+    sss.playBgm();
+    update(() => {
+      text.draw(`${score}`, 1, 1, { align: "left" });
+    });
+    spawn(wall, 50, 80, 0, 0.1, 99);
+    spawn(player);
+    update(u => {
+      u.interval = 20 / difficulty;
+      spawn(
+        wall,
+        random.get(99),
+        -5,
+        random.get(difficulty - 1) * random.getPlusOrMinus(),
+        random.get(0.1, difficulty),
+        random.get(20, 70)
+      );
+    });
+  },
+  () => {
+    sss.setSeed(2);
+  }
+);
+
 function player(a: Actor & { wallOn: boolean | Actor; isDead: boolean }) {
   a.setRect(5, 5);
   a.addRect(new Rect(3, 3, { offset: { y: -4 } }));
@@ -101,32 +130,3 @@ function scoreBoard(a: Actor, pos, _score) {
     }
   });
 }
-
-let score = 0;
-
-init(
-  "JUMP",
-  () => {
-    score = 0;
-    sss.playBgm();
-    update(() => {
-      text.draw(`${score}`, 1, 1, { align: "left" });
-    });
-    spawn(wall, 50, 80, 0, 0.1, 99);
-    spawn(player);
-    update(u => {
-      u.interval = 20 / difficulty;
-      spawn(
-        wall,
-        random.get(99),
-        -5,
-        random.get(difficulty - 1) * random.getPlusOrMinus(),
-        random.get(0.1, difficulty),
-        random.get(20, 70)
-      );
-    });
-  },
-  () => {
-    sss.setSeed(2);
-  }
-);
