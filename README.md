@@ -2,10 +2,11 @@
 
 Simple actor and actor pool for game objects.
 
+[code](https://github.com/abagames/simple-game-actor/blob/master/src/index.ts)
+
 ### Demo
 
-[jump](https://abagames.github.io/simple-game-actor/index.html?jump)
+[BOARD SURF](https://abagames.github.io/simple-game-actor/index.html?surf)
+([code](https://github.com/abagames/simple-game-actor/blob/master/src/samples/surf.ts))
 
-[![jump screenshot](https://abagames.github.io/simple-game-actor/jump.gif)](https://abagames.github.io/simple-game-actor/index.html?jump)
-
-[jump code](https://github.com/abagames/simple-game-actor/blob/master/src/samples/jump.ts).
+[![surf screenshot](https://abagames.github.io/simple-game-actor/surf.gif)](https://abagames.github.io/simple-game-actor/index.html?surf)
