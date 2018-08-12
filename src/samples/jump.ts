@@ -15,10 +15,11 @@ function player(a: Actor & { wallOn: boolean | Actor }) {
   const sb = new Vector(0, -1);
   a.update(() => {
     a.pos.x = math.clamp(pointer.pos.x, 0, 99);
-    a.vel.y += 0.1;
+    a.vel.y += pointer.isPressed ? 0.05 : 0.1;
     if (a.wallOn) {
       if (pointer.isJustPressed) {
-        a.vel.y = -3;
+        a.vel.y = -2;
+        (a.wallOn as Actor).vel.y += 2;
       } else {
         a.pos.y += 1;
         if (a.stepBack(a.wallOn as Actor, sb)) {

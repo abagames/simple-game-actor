@@ -150,12 +150,12 @@ export class Rect {
       this.currentOffset.set(this.offset).rotate(angle);
       this.updatePos(pos);
     }
-    screen.context.fillStyle = this.color;
-    screen.context.fillRect(
-      Math.floor(this.pos.x - this.size.x / 2),
-      Math.floor(this.pos.y - this.size.y / 2),
+    screen.fillRect(
+      this.pos.x - this.size.x / 2,
+      this.pos.y - this.size.y / 2,
       this.size.x,
-      this.size.y
+      this.size.y,
+      this.color
     );
   }
 
