@@ -142,6 +142,6 @@ export function setActorClass(_actorClass) {
 }
 
 export function updateFrame() {
-  updaterPool.updateFrame();
   pool.updateFrame();
+  updaterPool.updateFrame();
 }

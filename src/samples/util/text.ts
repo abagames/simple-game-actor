@@ -58,11 +58,13 @@ export function draw(
     scale: 1
   }
 ) {
-  const scale = options.scale;
-  let lx = x;
+  const align = options.align || "center";
+  const style = options.style || "black";
+  const scale = options.scale || 1;
   let lw = 5 * scale;
-  if (options.align === "left") {
-  } else if (options.align === "right") {
+  let lx = x;
+  if (align === "left") {
+  } else if (align === "right") {
     lx -= str.length * lw;
   } else {
     lx -= (str.length * lw) / 2;
@@ -73,7 +75,7 @@ export function draw(
     if (idx === -2) {
       throw `invalid char: ${str.charAt(i)}`;
     } else if (idx >= 0) {
-      drawLetter(idx, lx, ly, options.style, scale);
+      drawLetter(idx, lx, ly, style, scale);
     }
     lx += lw;
   }

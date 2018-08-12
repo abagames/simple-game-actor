@@ -11,7 +11,7 @@ export function init() {
   document.body.appendChild(canvas);
 }
 
-const background = "#ddd";
+export const background = "#ddd";
 
 export function clear() {
   fillRect(0, 0, size, size, background);

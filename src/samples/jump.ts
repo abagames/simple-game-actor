@@ -2,6 +2,8 @@ import { spawn, update } from "..";
 import { Actor, Rect } from "./util/actor";
 import { init, random, difficulty, endGame } from "./util/game";
 import * as pointer from "./util/pointer";
+import * as screen from "./util/screen";
+import * as text from "./util/text";
 import Vector from "./util/vector";
 import math from "./util/math";
 
@@ -44,22 +46,58 @@ function player(a: Actor & { wallOn: boolean | Actor; isDead: boolean }) {
       if (a.pos.y < 0 && a.vel.y < 0) {
         a.vel.y *= -0.5;
       }
-      a.wallOn = a.getColliding("wall");
-      if (a.vel.y > 0 && a.wallOn) {
-        a.stepBack(a.wallOn as Actor, sb);
+      const wo = a.getColliding("wall");
+      if (a.vel.y > 0 && wo) {
+        a.stepBack(wo, sb);
         a.vel.y = 0;
+        a.wallOn = wo;
+        const ws = (wo as any).score;
+        if (ws != null) {
+          spawn(scoreBoard, wo.pos, ws);
+          (wo as any).score = null;
+        }
       }
     }
   });
 }
 
-function wall(a: Actor, x, y, vx, vy, width) {
-  a.setRect(width, 5);
+function wall(a: Actor & { score: number }, x, y, vx, vy, width) {
+  a.setRect(width, 8);
   a.pos.set(x, y);
   a.vel.set(vx, vy);
+  const vxs = Math.abs(vx) + 1;
+  const vys = Math.abs(vy) + 1;
+  a.score = Math.floor((vxs * vxs * vys * vys * 100) / width + 1) * 10;
+  a.update((u, a) => {
+    if (a.score == null) {
+      u.remove();
+      return;
+    }
+    screen.fillRect(a.pos.x - 8, a.pos.y - 3, 16, 5, screen.background);
+    text.draw(`${a.score}`, a.pos.x, a.pos.y - 3);
+  });
 }
 
+function scoreBoard(a: Actor, pos, _score) {
+  score += _score;
+  a.pos.set(pos);
+  a.vel.y = -1;
+  a.update(() => {
+    a.vel.y *= 0.9;
+    text.draw(`${_score}`, a.pos.x, a.pos.y - 3);
+    if (a.ticks > 60) {
+      a.remove();
+    }
+  });
+}
+
+let score = 0;
+
 init("JUMP", () => {
+  score = 0;
+  update(() => {
+    text.draw(`${score}`, 1, 1, { align: "left" });
+  });
   spawn(wall, 50, 80, 0, 0.1, 99);
   spawn(player);
   update(() => {
@@ -67,7 +105,7 @@ init("JUMP", () => {
       wall,
       random.get(99),
       -5,
-      0,
+      random.get(difficulty - 1) * random.getPlusOrMinus(),
       random.get(0.1, difficulty),
       random.get(20, 70)
     );

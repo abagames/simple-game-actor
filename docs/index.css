@@ -15,8 +15,8 @@ canvas {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 95vmin;
-  height: 95vmin;
+  width: 90vmin;
+  height: 90vmin;
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: -o-crisp-edges;
