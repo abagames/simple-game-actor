@@ -120,7 +120,7 @@ export const updaterPool = new Pool();
 export function spawn(initFunc: (actor: AnyActor, ...args) => void, ...args) {
   const actor: AnyActor = new actorClass();
   actor.init(initFunc, ...args);
-  this.pool.add(actor);
+  pool.add(actor);
 }
 
 export function update(
@@ -128,6 +128,11 @@ export function update(
   interval = 1
 ) {
   updaterPool.add(new Updater(updateFunc, interval, null));
+}
+
+export function reset() {
+  pool.removeAll();
+  updaterPool.removeAll();
 }
 
 let actorClass = Actor;
