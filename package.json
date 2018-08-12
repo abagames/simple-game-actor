@@ -6,6 +6,7 @@
   "typings": "typings/index.d.ts",
   "devDependencies": {
     "awesome-typescript-loader": "^5.2.0",
+    "gif-capture-canvas": "^1.0.1",
     "html-webpack-plugin": "^3.2.0",
     "sounds-some-sounds": "^1.0.5",
     "typescript": "^3.0.1",

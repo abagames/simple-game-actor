@@ -1,5 +1,6 @@
-import * as sss from "sounds-some-sounds";
 import * as sga from "../..";
+import * as sss from "sounds-some-sounds";
+import * as gcc from "gif-capture-canvas";
 import * as screen from "./screen";
 import * as text from "./text";
 import * as pointer from "./pointer";
@@ -16,6 +17,8 @@ let beginFunc: Function;
 let scene: "title" | "game" | "gameOver";
 let gameOverTicks = 0;
 let title = "UNDEFINED";
+
+const isCapturing = false;
 
 export function init(
   _title: string,
@@ -35,6 +38,9 @@ export function init(
     sss.resumeAudioContext
   );
   sga.setActorClass(Actor);
+  if (isCapturing) {
+    gcc.setOptions({ scale: 1 });
+  }
   window.addEventListener("load", () => {
     if (_initFunc != null) {
       _initFunc();
@@ -58,6 +64,9 @@ function update() {
   updateScene();
   ticks++;
   difficulty = 1 + ticks / 60 / difficultyDoubledSecond;
+  if (isCapturing) {
+    gcc.capture(screen.canvas);
+  }
 }
 
 function updateScene() {
