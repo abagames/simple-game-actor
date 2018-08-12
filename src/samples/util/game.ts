@@ -1,3 +1,4 @@
+import * as sss from "sounds-some-sounds";
 import * as sga from "../..";
 import * as screen from "./screen";
 import * as text from "./text";
@@ -16,13 +17,27 @@ let scene: "title" | "game" | "gameOver";
 let gameOverTicks = 0;
 let title = "UNDEFINED";
 
-export function init(_title: string, _beginFunc: Function) {
+export function init(
+  _title: string,
+  _beginFunc: Function,
+  _initFunc: Function = null
+) {
   title = _title;
   beginFunc = _beginFunc;
+  sss.init();
   screen.init();
   text.init();
-  pointer.init(screen.canvas, new Vector(screen.size), new Vector());
+  pointer.init(
+    screen.canvas,
+    new Vector(screen.size),
+    new Vector(),
+    sss.playEmpty,
+    sss.resumeAudioContext
+  );
   sga.setActorClass(Actor);
+  if (_initFunc != null) {
+    _initFunc();
+  }
   beginTitle();
   update();
 }
@@ -34,6 +49,7 @@ export function endGame() {
 
 function update() {
   requestAnimationFrame(update);
+  sss.update();
   pointer.update();
   screen.clear();
   sga.updateFrame();

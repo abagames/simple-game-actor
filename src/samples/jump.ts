@@ -1,4 +1,5 @@
 import { spawn, update } from "..";
+import * as sss from "sounds-some-sounds";
 import { Actor, Rect } from "./util/actor";
 import { init, random, difficulty, endGame } from "./util/game";
 import * as pointer from "./util/pointer";
@@ -9,7 +10,7 @@ import math from "./util/math";
 
 function player(a: Actor & { wallOn: boolean | Actor; isDead: boolean }) {
   a.setRect(5, 5);
-  a.addRect(new Rect(3, 3, { offset: { y: -5 } }));
+  a.addRect(new Rect(3, 3, { offset: { y: -4 } }));
   a.addRect(new Rect(3, 3, { offset: { x: -4, y: -6 }, springRatio: 0.2 }));
   a.addRect(new Rect(3, 3, { offset: { x: 4, y: -6 }, springRatio: 0.2 }));
   a.pos.set(50, 20);
@@ -17,20 +18,31 @@ function player(a: Actor & { wallOn: boolean | Actor; isDead: boolean }) {
   a.isDead = false;
   const sb = new Vector(0, -1);
   a.update(() => {
-    a.pos.x = math.clamp(pointer.pos.x, 0, 99);
-    a.vel.y += pointer.isPressed ? 0.03 : 0.1;
     if (a.isDead) {
       a.angle += 0.1;
+      a.vel.y += 0.2;
       return;
+    } else {
+      a.pos.x = math.clamp(pointer.pos.x, 0, 99);
+      a.vel.y += pointer.isPressed ? 0.03 : 0.1;
     }
     if (a.pos.y > 120) {
-      a.vel.y = -4;
-      a.angle += 0.5;
+      a.vel.y = -6;
+      a.angle += 1;
       a.isDead = true;
+      sss.playJingle("l_d", true);
+      sss.stopBgm();
       endGame();
     }
+    if (a.pos.y < 0) {
+      a.pos.y = 0;
+      if (a.vel.y < 0) {
+        a.vel.y *= -0.5;
+      }
+    }
     if (a.wallOn) {
-      if (pointer.isJustPressed) {
+      if (pointer.isPressed) {
+        sss.play("j_p1");
         a.vel.y = -2;
         (a.wallOn as Actor).vel.y += 2;
       } else {
@@ -38,23 +50,22 @@ function player(a: Actor & { wallOn: boolean | Actor; isDead: boolean }) {
         if (a.stepBack(a.wallOn as Actor, sb)) {
           a.vel.y = 0;
         }
-        if (a.vel.length > 1) {
-          a.wallOn = false;
-        }
+      }
+      if (a.vel.length > 1) {
+        a.wallOn = false;
       }
     } else {
-      if (a.pos.y < 0 && a.vel.y < 0) {
-        a.vel.y *= -0.5;
-      }
       const wo = a.getColliding("wall");
       if (a.vel.y > 0 && wo) {
         a.stepBack(wo, sb);
         a.vel.y = 0;
         a.wallOn = wo;
         const ws = (wo as any).score;
+        sss.play("h_w");
         if (ws != null) {
           spawn(scoreBoard, wo.pos, ws);
           (wo as any).score = null;
+          sss.play("c_ow");
         }
       }
     }
@@ -93,21 +104,29 @@ function scoreBoard(a: Actor, pos, _score) {
 
 let score = 0;
 
-init("JUMP", () => {
-  score = 0;
-  update(() => {
-    text.draw(`${score}`, 1, 1, { align: "left" });
-  });
-  spawn(wall, 50, 80, 0, 0.1, 99);
-  spawn(player);
-  update(() => {
-    spawn(
-      wall,
-      random.get(99),
-      -5,
-      random.get(difficulty - 1) * random.getPlusOrMinus(),
-      random.get(0.1, difficulty),
-      random.get(20, 70)
-    );
-  }, 20);
-});
+init(
+  "JUMP",
+  () => {
+    score = 0;
+    sss.playBgm();
+    update(() => {
+      text.draw(`${score}`, 1, 1, { align: "left" });
+    });
+    spawn(wall, 50, 80, 0, 0.1, 99);
+    spawn(player);
+    update(u => {
+      u.interval = 20 / difficulty;
+      spawn(
+        wall,
+        random.get(99),
+        -5,
+        random.get(difficulty - 1) * random.getPlusOrMinus(),
+        random.get(0.1, difficulty),
+        random.get(20, 70)
+      );
+    });
+  },
+  () => {
+    sss.setSeed(2);
+  }
+);

@@ -23,9 +23,7 @@ export class Actor extends sga.Actor {
       offset: { x: 0, y: 0 }
     }
   ) {
-    this.addRect(
-      new Rect(width, height, { color: options.color, offset: options.offset })
-    );
+    this.addRect(new Rect(width, height, options));
   }
 
   addRect(rect: Rect) {
@@ -114,8 +112,10 @@ export class Rect {
     }
   ) {
     this.size.set(width, height);
-    this.offset.set(options.offset.x, options.offset.y);
-    this.color = options.color;
+    this.color = options.color || "black";
+    if (options.offset != null) {
+      this.offset.set(options.offset.x || 0, options.offset.y || 0);
+    }
     this.springRatio = options.springRatio;
   }
 

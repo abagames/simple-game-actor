@@ -47,6 +47,7 @@ export class Updater {
   name = "updater";
   isAlive = true;
   ticks = 0;
+  intervalTicks = 0;
 
   constructor(
     public updateFunc: (updater: Updater, actor: AnyActor) => void,
@@ -55,8 +56,10 @@ export class Updater {
   ) {}
 
   updateFrame() {
-    if (this.ticks % this.interval === 0) {
+    this.intervalTicks--;
+    if (this.intervalTicks <= 0) {
       this.updateFunc(this, this.actor);
+      this.intervalTicks = this.interval;
     }
     this.ticks++;
   }
