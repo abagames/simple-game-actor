@@ -1,5 +1,6 @@
 import * as sga from "../..";
 import * as screen from "./screen";
+import * as text from "./text";
 import * as pointer from "./pointer";
 import { Actor } from "./actor";
 import Vector from "./vector";
@@ -13,10 +14,13 @@ const difficultyDoubledSecond = 30;
 let beginFunc: Function;
 let scene: "title" | "game" | "gameOver";
 let gameOverTicks = 0;
+let title = "UNDEFINED";
 
-export function init(_beginFunc: Function) {
+export function init(_title: string, _beginFunc: Function) {
+  title = _title;
   beginFunc = _beginFunc;
   screen.init();
+  text.init();
   pointer.init(screen.canvas, new Vector(screen.size), new Vector());
   sga.setActorClass(Actor);
   beginTitle();
@@ -47,6 +51,11 @@ function updateScene() {
   }
   if (scene === "gameOver" && gameOverTicks > 180) {
     beginTitle();
+  }
+  if (scene === "title") {
+    text.draw(title, 50, 40, { scale: 2 });
+  } else if (scene === "gameOver") {
+    text.draw("GAME OVER", 50, 45);
   }
   gameOverTicks++;
 }

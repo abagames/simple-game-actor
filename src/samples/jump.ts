@@ -16,7 +16,7 @@ function player(a: Actor & { wallOn: boolean | Actor; isDead: boolean }) {
   const sb = new Vector(0, -1);
   a.update(() => {
     a.pos.x = math.clamp(pointer.pos.x, 0, 99);
-    a.vel.y += pointer.isPressed ? 0.05 : 0.1;
+    a.vel.y += pointer.isPressed ? 0.03 : 0.1;
     if (a.isDead) {
       a.angle += 0.1;
       return;
@@ -59,7 +59,7 @@ function wall(a: Actor, x, y, vx, vy, width) {
   a.vel.set(vx, vy);
 }
 
-init(() => {
+init("JUMP", () => {
   spawn(wall, 50, 80, 0, 0.1, 99);
   spawn(player);
   update(() => {
