@@ -6,16 +6,6 @@ export class Actor {
   updaterPool = new Pool();
   onRemove: Function;
 
-  init(initFunc: (actor: AnyActor, ...args) => void, ...args) {
-    this.name = initFunc.name;
-    initFunc(this, ...args);
-    this.pool.add(this);
-  }
-
-  setPool(pool: Pool) {
-    this.pool = pool;
-  }
-
   remove() {
     if (!this.isAlive) {
       return;
@@ -31,6 +21,16 @@ export class Actor {
     interval = 1
   ) {
     this.updaterPool.add(new Updater(updateFunc, interval, this));
+  }
+
+  setPool(pool: Pool) {
+    this.pool = pool;
+  }
+
+  init(initFunc: (actor: AnyActor, ...args) => void, ...args) {
+    this.name = initFunc.name;
+    initFunc(this, ...args);
+    this.pool.add(this);
   }
 
   updateFrame() {
@@ -49,6 +49,14 @@ export class Updater {
   ticks = 0;
   intervalTicks = 0;
 
+  remove() {
+    this.isAlive = false;
+  }
+
+  setInterval(interval: number) {
+    this.interval = interval;
+  }
+
   constructor(
     public updateFunc: (updater: Updater, actor: AnyActor) => void,
     public interval: number,
@@ -62,10 +70,6 @@ export class Updater {
       this.intervalTicks = this.interval;
     }
     this.ticks++;
-  }
-
-  remove() {
-    this.isAlive = false;
   }
 }
 
@@ -119,6 +123,7 @@ export class Pool {
 
 export const pool = new Pool();
 export const updaterPool = new Pool();
+let actorClass = Actor;
 
 export function spawn(initFunc: (actor: AnyActor, ...args) => void, ...args) {
   const actor: AnyActor = new actorClass();
@@ -133,18 +138,16 @@ export function update(
   updaterPool.add(new Updater(updateFunc, interval, null));
 }
 
+export function updateFrame() {
+  pool.updateFrame();
+  updaterPool.updateFrame();
+}
+
 export function reset() {
   pool.removeAll();
   updaterPool.removeAll();
 }
 
-let actorClass = Actor;
-
 export function setActorClass(_actorClass) {
   actorClass = _actorClass;
-}
-
-export function updateFrame() {
-  pool.updateFrame();
-  updaterPool.updateFrame();
 }

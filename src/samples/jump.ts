@@ -21,7 +21,7 @@ init(
     spawn(wall, 50, 80, 0, 0.1, 99);
     spawn(player);
     update(u => {
-      u.interval = 20 / difficulty;
+      u.setInterval(20 / difficulty);
       spawn(
         wall,
         random.get(99),
