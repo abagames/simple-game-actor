@@ -32,7 +32,7 @@ init(
     });
   },
   () => {
-    update(u => {
+    update(() => {
       text.draw("BOARD\nSURF", 50, 32, { scale: 2 });
       if (ticks % 60 < 30) {
         text.draw("CLICK OR TAP\nTO START", 50, 75);
@@ -115,7 +115,7 @@ function wall(a: Actor & { score: number }, x, y, vx, vy, width) {
   const vxs = Math.abs(vx) + 1;
   const vys = Math.abs(vy) + 1;
   a.score = Math.floor((vxs * vxs * vys * vys * 100) / width + 1) * 10;
-  a.update((u, a) => {
+  a.update(u => {
     if (a.score == null) {
       u.remove();
       return;
