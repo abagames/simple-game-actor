@@ -13,20 +13,19 @@ export let ticks = 0;
 export let difficulty = 1;
 
 const difficultyDoubledSecond = 30;
-let beginFunc: Function;
+let beginGameFunc: Function;
+let beginTitleFunc: Function;
 let scene: "title" | "game" | "gameOver";
-let gameOverTicks = 0;
-let title = "UNDEFINED";
 
 const isCapturing = false;
 
 export function init(
-  _title: string,
-  _beginFunc: Function,
+  _beginGameFunc: Function,
+  _beginTitleFunc: Function,
   _initFunc: Function = null
 ) {
-  title = _title;
-  beginFunc = _beginFunc;
+  beginGameFunc = _beginGameFunc;
+  beginTitleFunc = _beginTitleFunc;
   sss.init();
   screen.init();
   text.init();
@@ -45,14 +44,18 @@ export function init(
     if (_initFunc != null) {
       _initFunc();
     }
-    beginTitle();
+    if (_beginTitleFunc != null) {
+      beginTitle();
+    } else {
+      endGame();
+    }
     update();
   });
 }
 
 export function endGame() {
   scene = "gameOver";
-  gameOverTicks = 0;
+  ticks = 0;
 }
 
 function update() {
@@ -63,7 +66,6 @@ function update() {
   sga.updateFrame();
   updateScene();
   ticks++;
-  difficulty = 1 + ticks / 60 / difficultyDoubledSecond;
   if (isCapturing) {
     gcc.capture(screen.canvas);
   }
@@ -71,29 +73,32 @@ function update() {
 
 function updateScene() {
   if (
-    (scene === "title" || (scene === "gameOver" && gameOverTicks > 40)) &&
+    (scene === "title" || (scene === "gameOver" && ticks > 40)) &&
     pointer.isPressed
   ) {
     beginGame();
   }
-  if (scene === "gameOver" && gameOverTicks > 180) {
+  if (scene === "gameOver" && ticks > 180) {
     beginTitle();
   }
-  if (scene === "title") {
-    text.draw(title, 50, 38, { scale: 2 });
-  } else if (scene === "gameOver") {
+  if (scene === "gameOver") {
     text.draw("GAME OVER", 50, 45);
   }
-  gameOverTicks++;
+  difficulty = scene === "game" ? 1 + ticks / 60 / difficultyDoubledSecond : 1;
 }
 
 function beginTitle() {
+  if (beginTitleFunc == null) {
+    return;
+  }
   scene = "title";
+  ticks = 0;
+  beginTitleFunc();
 }
 
 function beginGame() {
   scene = "game";
   ticks = 0;
   sga.reset();
-  beginFunc();
+  beginGameFunc();
 }

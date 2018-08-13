@@ -1,7 +1,7 @@
 import { spawn, update } from "..";
 import * as sss from "sounds-some-sounds";
 import { Actor, Rect } from "./util/actor";
-import { init, random, difficulty, endGame } from "./util/game";
+import { init, endGame, random, ticks, difficulty } from "./util/game";
 import * as pointer from "./util/pointer";
 import * as screen from "./util/screen";
 import * as text from "./util/text";
@@ -11,8 +11,6 @@ import math from "./util/math";
 let score = 0;
 
 init(
-  `BOARD
-SURF`,
   () => {
     score = 0;
     sss.playBgm();
@@ -31,6 +29,14 @@ SURF`,
         random.get(0.1, difficulty),
         random.get(20, 70)
       );
+    });
+  },
+  () => {
+    update(u => {
+      text.draw("BOARD\nSURF", 50, 32, { scale: 2 });
+      if (ticks % 60 < 30) {
+        text.draw("CLICK OR TAP\nTO START", 50, 75);
+      }
     });
   },
   () => {
