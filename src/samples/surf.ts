@@ -77,7 +77,7 @@ function player(a: Actor & { wallOn: boolean | Actor; isDead: boolean }) {
       }
     }
     if (a.wallOn) {
-      if (pointer.isPressed) {
+      if (pointer.isJustPressed) {
         sss.play("j_p1");
         a.vel.y = -2;
         (a.wallOn as Actor).vel.y += 2;
