@@ -1,6 +1,6 @@
 export class Actor {
   pool = pool;
-  name;
+  func: Function;
   isAlive = true;
   ticks = 0;
   updaterPool = new Pool();
@@ -28,7 +28,7 @@ export class Actor {
   }
 
   init(initFunc: (actor: AnyActor, ...args) => void, ...args) {
-    this.name = initFunc.name;
+    this.func = initFunc;
     initFunc(this, ...args);
     this.pool.add(this);
   }
@@ -44,7 +44,7 @@ export interface AnyActor extends Actor {
 }
 
 export class Updater {
-  name = "updater";
+  func: Function;
   isAlive = true;
   ticks = 0;
   intervalTicks = 0;
@@ -61,7 +61,9 @@ export class Updater {
     public updateFunc: (updater: Updater, actor: AnyActor) => void,
     public interval: number,
     public actor: AnyActor
-  ) {}
+  ) {
+    this.func = updateFunc;
+  }
 
   updateFrame() {
     this.intervalTicks--;
@@ -74,7 +76,7 @@ export class Updater {
 }
 
 export interface UpdatedInstance {
-  name: string;
+  func: Function;
   isAlive: boolean;
   updateFrame: Function;
   remove: Function;
@@ -106,10 +108,10 @@ export class Pool {
     }
   }
 
-  get(name: string = null) {
-    return name == null
+  get(func?: Function) {
+    return func == null
       ? this.instances
-      : this.instances.filter(a => a.name === name);
+      : this.instances.filter(a => a.func === func);
   }
 
   removeAll() {

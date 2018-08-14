@@ -91,7 +91,7 @@ function player(a: Actor & { wallOn: boolean | Actor; isDead: boolean }) {
         a.wallOn = false;
       }
     } else {
-      const wo = a.getColliding("wall");
+      const wo = a.getColliding(wall);
       if (a.vel.y > 0 && wo) {
         a.stepBack(wo, sb);
         a.vel.y = 0;

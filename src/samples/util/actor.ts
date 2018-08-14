@@ -34,13 +34,13 @@ export class Actor extends sga.Actor {
     return this.rects.some(r => other.rects.some(or => r.testColliding(or)));
   }
 
-  getCollidings(name?: string) {
-    const actors = this.pool.get(name) as Actor[];
+  getCollidings(func?: Function) {
+    const actors = this.pool.get(func) as Actor[];
     return actors.filter(a => this.testColliding(a));
   }
 
-  getColliding(name?: string) {
-    const actors = this.pool.get(name) as Actor[];
+  getColliding(func?: Function) {
+    const actors = this.pool.get(func) as Actor[];
     for (let a of actors) {
       if (this.testColliding(a)) {
         return a;
@@ -49,15 +49,15 @@ export class Actor extends sga.Actor {
     return false;
   }
 
-  stepBack(name?: string | Actor, angleVector?: Vector) {
+  stepBack(func?: Function | Actor, angleVector?: Vector) {
     if (angleVector == null) {
       angleVector = new Vector().set(this.prevPos).sub(this.pos);
     }
     angleVector.normalize().div(2);
     for (let i = 0; i < 99; i++) {
       if (
-        (typeof name === "string" && !this.getColliding(name)) ||
-        (name instanceof Actor && !this.testColliding(name))
+        (typeof func === "string" && !this.getColliding(func)) ||
+        (func instanceof Actor && !this.testColliding(func))
       ) {
         break;
       }
