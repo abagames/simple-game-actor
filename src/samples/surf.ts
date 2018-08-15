@@ -1,4 +1,4 @@
-import { spawn, update } from "..";
+import { spawn, update, reset } from "..";
 import * as sss from "sounds-some-sounds";
 import { Actor, Rect } from "./util/actor";
 import { init, endGame, random, ticks, difficulty } from "./util/game";
@@ -9,9 +9,11 @@ import Vector from "./util/vector";
 import math from "./util/math";
 
 let score = 0;
+let gameOverUpdater;
 
 init(
   () => {
+    reset();
     score = 0;
     sss.playBgm();
     update(() => {
@@ -32,6 +34,14 @@ init(
     });
   },
   () => {
+    gameOverUpdater = update(() => {
+      text.draw("GAME OVER", 50, 45);
+    });
+  },
+  () => {
+    if (gameOverUpdater != null) {
+      gameOverUpdater.remove();
+    }
     update(() => {
       text.draw("BOARD\nSURF", 50, 32, { scale: 2 });
       if (ticks % 60 < 30) {

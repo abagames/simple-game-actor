@@ -14,6 +14,7 @@ export let difficulty = 1;
 
 const difficultyDoubledSecond = 30;
 let beginGameFunc: Function;
+let beginGameOverFunc: Function;
 let beginTitleFunc: Function;
 let scene: "title" | "game" | "gameOver";
 
@@ -21,10 +22,12 @@ const isCapturing = false;
 
 export function init(
   _beginGameFunc: Function,
-  _beginTitleFunc: Function,
-  _initFunc: Function = null
+  _beginGameOverFunc?: Function,
+  _beginTitleFunc?: Function,
+  _initFunc?: Function
 ) {
   beginGameFunc = _beginGameFunc;
+  beginGameOverFunc = _beginGameOverFunc;
   beginTitleFunc = _beginTitleFunc;
   sss.init();
   screen.init();
@@ -54,6 +57,9 @@ export function init(
 }
 
 export function endGame() {
+  if (beginGameOverFunc != null) {
+    beginGameOverFunc();
+  }
   scene = "gameOver";
   ticks = 0;
 }
@@ -81,9 +87,6 @@ function updateScene() {
   if (scene === "gameOver" && ticks > 180) {
     beginTitle();
   }
-  if (scene === "gameOver") {
-    text.draw("GAME OVER", 50, 45);
-  }
   difficulty = scene === "game" ? 1 + ticks / 60 / difficultyDoubledSecond : 1;
 }
 
@@ -99,6 +102,5 @@ function beginTitle() {
 function beginGame() {
   scene = "game";
   ticks = 0;
-  sga.reset();
   beginGameFunc();
 }

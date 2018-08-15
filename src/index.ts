@@ -20,7 +20,9 @@ export class Actor {
     updateFunc: (updater: Updater, actor: AnyActor) => void,
     interval = 1
   ) {
-    this.updaterPool.add(new Updater(updateFunc, interval, this));
+    const updater = new Updater(updateFunc, interval, this);
+    this.updaterPool.add(updater);
+    return updater;
   }
 
   setPool(pool: Pool) {
@@ -131,13 +133,16 @@ export function spawn(initFunc: (actor: AnyActor, ...args) => void, ...args) {
   const actor: AnyActor = new actorClass();
   actor.init(initFunc, ...args);
   pool.add(actor);
+  return actor;
 }
 
 export function update(
   updateFunc: (updater: Updater, actor: AnyActor) => void,
   interval = 1
 ) {
-  updaterPool.add(new Updater(updateFunc, interval, null));
+  const updater = new Updater(updateFunc, interval, null);
+  updaterPool.add(updater);
+  return updater;
 }
 
 export function updateFrame() {
