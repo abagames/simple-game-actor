@@ -6,13 +6,13 @@ import * as pointer from "./util/pointer";
 import * as screen from "./util/screen";
 import * as text from "./util/text";
 import Vector from "./util/vector";
-import math from "./util/math";
+import * as math from "./util/math";
 
 let score = 0;
 let gameOverUpdater;
 
-init(
-  () => {
+init({
+  game: () => {
     reset();
     score = 0;
     sss.playBgm();
@@ -33,12 +33,12 @@ init(
       );
     });
   },
-  () => {
+  gameOver: () => {
     gameOverUpdater = update(() => {
       text.draw("GAME OVER", 50, 45);
     });
   },
-  () => {
+  title: () => {
     if (gameOverUpdater != null) {
       gameOverUpdater.remove();
     }
@@ -49,10 +49,11 @@ init(
       }
     });
   },
-  () => {
+  init: () => {
     sss.setSeed(2);
   }
-);
+  //isDebugMode: true
+});
 
 function player(a: Actor & { wallOn: boolean | Actor; isDead: boolean }) {
   a.setRect(5, 5);

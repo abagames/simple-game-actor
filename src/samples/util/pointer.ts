@@ -1,28 +1,36 @@
 import Vector from "./vector";
+import Random from "./random";
+import { isInRange } from "./math";
 
-export let pos: Vector;
-export let move: Vector;
-export let pressedPos: Vector;
-export let targetPos: Vector;
+export let pos = new Vector();
+export let move = new Vector();
+export let pressedPos = new Vector();
+export let targetPos = new Vector();
 export let isPressed = false;
 export let isJustPressed = false;
 
-let cursorPos: Vector;
+let cursorPos = new Vector();
 let isDown = false;
 let screen: HTMLElement;
 let pixelSize: Vector;
 let isInitialized = false;
 let padding: Vector;
-let prevPos: Vector;
+let prevPos = new Vector();
 let isResettingTargetPos = false;
 let onPointerUp: Function;
+let isDebugMode = false;
+let debugRandom = new Random();
+let debugPos = new Vector();
+let debugMoveVel = new Vector();
+let debugIsDown = false;
 
 export function init(
   _screen: HTMLElement,
   _pixelSize: Vector,
   _padding: Vector = new Vector(),
   onTouchStart: Function = null,
-  _onPointerUp: Function = null
+  _onPointerUp: Function = null,
+  _isDebugMode = false
 ) {
   screen = _screen;
   pixelSize = new Vector(
@@ -31,6 +39,10 @@ export function init(
   );
   padding = _padding;
   onPointerUp = _onPointerUp;
+  isDebugMode = _isDebugMode;
+  if (isDebugMode) {
+    debugPos.set(pixelSize.x / 2, pixelSize.y / 2);
+  }
   document.addEventListener("mousedown", e => {
     onDown(e.pageX, e.pageY);
   });
@@ -63,12 +75,6 @@ export function init(
     },
     { passive: false }
   );
-  pos = new Vector();
-  move = new Vector();
-  pressedPos = new Vector();
-  prevPos = new Vector();
-  targetPos = new Vector();
-  cursorPos = new Vector();
   isInitialized = true;
 }
 
@@ -76,10 +82,15 @@ export function update() {
   if (!isInitialized) {
     return;
   }
+  calcPointerPos(cursorPos.x, cursorPos.y, pos);
+  if (isDebugMode && !pos.isInRect(0, 0, pixelSize.x, pixelSize.y)) {
+    updateDebug();
+    pos.set(debugPos);
+    isDown = debugIsDown;
+  }
   const pp = isPressed;
   isPressed = isDown;
   isJustPressed = !pp && isPressed;
-  calcPointerPos(cursorPos.x, cursorPos.y, pos);
   if (isJustPressed) {
     pressedPos.set(pos);
     prevPos.set(pos);
@@ -133,5 +144,37 @@ function onUp(e) {
   isDown = false;
   if (onPointerUp != null) {
     onPointerUp();
+  }
+}
+
+function updateDebug() {
+  if (debugMoveVel.length > 0) {
+    debugPos.add(debugMoveVel);
+    if (
+      !isInRange(debugPos.x, -pixelSize.x * 0.1, pixelSize.x * 1.1) &&
+      debugPos.x * debugMoveVel.x > 0
+    ) {
+      debugMoveVel.x *= -1;
+    }
+    if (
+      !isInRange(debugPos.y, -pixelSize.y * 0.1, pixelSize.y * 1.1) &&
+      debugPos.y * debugMoveVel.y > 0
+    ) {
+      debugMoveVel.y *= -1;
+    }
+    if (debugRandom.get() < 0.05) {
+      debugMoveVel.set(0);
+    }
+  } else {
+    if (debugRandom.get() < 0.1) {
+      debugMoveVel.set(0);
+      debugMoveVel.addAngle(
+        debugRandom.get(Math.PI * 2),
+        (pixelSize.x + pixelSize.y) * debugRandom.get(0.01, 0.03)
+      );
+    }
+  }
+  if (debugRandom.get() < 0.05) {
+    debugIsDown = !debugIsDown;
   }
 }

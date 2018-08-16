@@ -1,4 +1,4 @@
-import math from "./math";
+import { clamp, isInRange } from "./math";
 
 export default class Vector {
   x = 0;
@@ -44,8 +44,8 @@ export default class Vector {
   }
 
   clamp(xLow: number, xHigh: number, yLow: number, yHigh: number) {
-    this.x = math.clamp(this.x, xLow, xHigh);
-    this.y = math.clamp(this.y, yLow, yHigh);
+    this.x = clamp(this.x, xLow, xHigh);
+    this.y = clamp(this.y, yLow, yHigh);
     return this;
   }
 
@@ -87,6 +87,10 @@ export default class Vector {
     const ox = this.x - to.x;
     const oy = this.y - to.y;
     return Math.sqrt(ox * ox + oy * oy);
+  }
+
+  isInRect(x: number, y: number, width: number, height: number) {
+    return isInRange(this.x, x, x + width) && isInRange(this.y, y, y + height);
   }
 
   get length() {

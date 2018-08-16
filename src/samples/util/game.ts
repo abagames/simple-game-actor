@@ -21,14 +21,23 @@ let scene: "title" | "game" | "gameOver";
 const isCapturing = false;
 
 export function init(
-  _beginGameFunc: Function,
-  _beginGameOverFunc?: Function,
-  _beginTitleFunc?: Function,
-  _initFunc?: Function
+  options: {
+    title?: Function;
+    game?: Function;
+    gameOver?: Function;
+    init?: Function;
+    isDebugMode?: boolean;
+  } = {
+    title: null,
+    game: null,
+    gameOver: null,
+    init: null,
+    isDebugMode: false
+  }
 ) {
-  beginGameFunc = _beginGameFunc;
-  beginGameOverFunc = _beginGameOverFunc;
-  beginTitleFunc = _beginTitleFunc;
+  beginTitleFunc = options.title;
+  beginGameFunc = options.game;
+  beginGameOverFunc = options.gameOver;
   sss.init();
   screen.init();
   text.init();
@@ -37,17 +46,18 @@ export function init(
     new Vector(screen.size),
     new Vector(),
     sss.playEmpty,
-    sss.resumeAudioContext
+    sss.resumeAudioContext,
+    options.isDebugMode
   );
   sga.setActorClass(Actor);
   if (isCapturing) {
     gcc.setOptions({ scale: 1 });
   }
   window.addEventListener("load", () => {
-    if (_initFunc != null) {
-      _initFunc();
+    if (options.init != null) {
+      options.init();
     }
-    if (_beginTitleFunc != null) {
+    if (beginTitleFunc != null) {
       beginTitle();
     } else {
       endGame();
