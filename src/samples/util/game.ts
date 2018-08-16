@@ -4,6 +4,7 @@ import * as gcc from "gif-capture-canvas";
 import * as screen from "./screen";
 import * as text from "./text";
 import * as pointer from "./pointer";
+import * as keyboard from "./keyboard";
 import { Actor } from "./actor";
 import Vector from "./vector";
 import Random from "./random";
@@ -11,6 +12,7 @@ import Random from "./random";
 export const random = new Random();
 export let ticks = 0;
 export let difficulty = 1;
+export let isUsingKeyboard = false;
 
 const difficultyDoubledSecond = 30;
 let beginGameFunc: Function;
@@ -49,6 +51,7 @@ export function init(
     sss.resumeAudioContext,
     options.isDebugMode
   );
+  keyboard.init();
   sga.setActorClass(Actor);
   if (isCapturing) {
     gcc.setOptions({ scale: 1 });
@@ -78,6 +81,7 @@ function update() {
   requestAnimationFrame(update);
   sss.update();
   pointer.update();
+  keyboard.update();
   screen.clear();
   sga.updateFrame();
   updateScene();
@@ -90,8 +94,9 @@ function update() {
 function updateScene() {
   if (
     (scene === "title" || (scene === "gameOver" && ticks > 40)) &&
-    pointer.isPressed
+    (pointer.isPressed || keyboard.isPressed)
   ) {
+    isUsingKeyboard = keyboard.isPressed;
     beginGame();
   }
   if (scene === "gameOver" && ticks > 180) {

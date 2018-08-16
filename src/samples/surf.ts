@@ -1,8 +1,16 @@
 import { spawn, update, reset } from "..";
 import * as sss from "sounds-some-sounds";
 import { Actor, Rect } from "./util/actor";
-import { init, endGame, random, ticks, difficulty } from "./util/game";
+import {
+  init,
+  endGame,
+  random,
+  ticks,
+  difficulty,
+  isUsingKeyboard
+} from "./util/game";
 import * as pointer from "./util/pointer";
+import * as keyboard from "./util/keyboard";
 import * as screen from "./util/screen";
 import * as text from "./util/text";
 import Vector from "./util/vector";
@@ -70,8 +78,16 @@ function player(a: Actor & { wallOn: boolean | Actor; isDead: boolean }) {
       a.vel.y += 0.2;
       return;
     } else {
-      a.pos.x = math.clamp(pointer.pos.x, 0, 99);
-      a.vel.y += pointer.isPressed ? 0.03 : 0.1;
+      if (isUsingKeyboard) {
+        a.pos.x += keyboard.stick.x * 2;
+      } else {
+        a.pos.x = pointer.pos.x;
+      }
+      a.pos.x = math.clamp(a.pos.x, 0, 99);
+      const isPressed = isUsingKeyboard
+        ? keyboard.isPressed
+        : pointer.isPressed;
+      a.vel.y += isPressed ? 0.03 : 0.1;
     }
     if (a.pos.y > 120) {
       a.vel.y = -6;
@@ -88,7 +104,10 @@ function player(a: Actor & { wallOn: boolean | Actor; isDead: boolean }) {
       }
     }
     if (a.wallOn) {
-      if (pointer.isJustPressed) {
+      const isJustPressed = isUsingKeyboard
+        ? keyboard.isJustPressed
+        : pointer.isJustPressed;
+      if (isJustPressed) {
         sss.play("j_p1");
         a.vel.y = -2;
         (a.wallOn as Actor).vel.y += 2;

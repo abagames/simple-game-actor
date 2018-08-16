@@ -19,3 +19,7 @@ export function wrap(v: number, low: number, high: number) {
 export function isInRange(v: number, low: number, high: number) {
   return low <= v && v <= high;
 }
+
+export function range(v: number) {
+  return [...Array(v).keys()];
+}
