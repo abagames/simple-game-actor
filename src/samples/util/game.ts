@@ -52,7 +52,9 @@ export function init(
     sss.resumeAudioContext,
     options.isDebugMode
   );
-  keyboard.init();
+  if (enableKeyboard) {
+    keyboard.init();
+  }
   sga.setActorClass(Actor);
   if (isCapturing) {
     gcc.setOptions({ scale: 1 });
@@ -82,7 +84,9 @@ function update() {
   requestAnimationFrame(update);
   sss.update();
   pointer.update();
-  keyboard.update();
+  if (enableKeyboard) {
+    keyboard.update();
+  }
   screen.clear();
   sga.updateFrame();
   updateScene();
