@@ -15,6 +15,7 @@ export let difficulty = 1;
 export let isUsingKeyboard = false;
 
 const difficultyDoubledSecond = 30;
+const enableKeyboard = false;
 let beginGameFunc: Function;
 let beginGameOverFunc: Function;
 let beginTitleFunc: Function;
@@ -94,9 +95,9 @@ function update() {
 function updateScene() {
   if (
     (scene === "title" || (scene === "gameOver" && ticks > 40)) &&
-    (pointer.isPressed || keyboard.isPressed)
+    (pointer.isPressed || (enableKeyboard && keyboard.isPressed))
   ) {
-    isUsingKeyboard = keyboard.isPressed;
+    isUsingKeyboard = enableKeyboard && keyboard.isPressed;
     beginGame();
   }
   if (scene === "gameOver" && ticks > 180) {
