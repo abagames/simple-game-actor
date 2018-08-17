@@ -1,38 +1,52 @@
 import * as sga from "../../..";
-import * as ppc from "pixel-perfect-collider";
+import { Collider, clearCache } from "pixel-perfect-collider";
 import * as screen from "./screen";
 import Vector from "../vector";
 
-let textures = {};
 const removePaddingRatio = 0.25;
+let imageCache: { [key: string]: HTMLImageElement[] } = {};
+let textureCache: { [key: string]: PIXI.Texture[] } = {};
 
 export class Actor extends sga.Actor {
   pos = new Vector();
+  prevPos = new Vector();
+  vel = new Vector();
+  speed = 0;
+  angle = 0;
   size = new Vector();
   sprite: PIXI.Sprite;
-  collider: ppc.Collider;
-  colliders: { [key: string]: ppc.Collider } = {};
+  collider: Collider;
+  colliderCache: { [key: string]: Collider } = {};
 
-  setImage(image: HTMLImageElement, name: string, isAddingCollider = true) {
+  setImage(image: HTMLImageElement) {
+    const name = this.func.name;
+    let cachedImages = imageCache[name];
+    if (cachedImages == null) {
+      cachedImages = imageCache[name] = [];
+      textureCache[name] = [];
+    }
     let texture;
-    if (textures[name] != null) {
-      texture = textures[name];
+    const ci = cachedImages.indexOf(image);
+    if (ci >= 0) {
+      texture = textureCache[ci];
     } else {
-      texture = PIXI.Texture.fromLoader(image, name);
-      textures[name] = texture;
+      texture = PIXI.Texture.fromLoader(
+        image,
+        `${name}_${cachedImages.length}`
+      );
+      cachedImages.push(image);
+      textureCache[name].push(texture);
     }
     this.setTextureToSprite(texture);
     this.size.x = image.width;
     this.size.y = image.height;
-    if (isAddingCollider) {
-      const c = this.colliders[name];
-      if (c != null) {
-        this.collider = c;
-      } else {
-        this.collider = new ppc.Collider(image);
-        this.collider.setAnchor(0.5, 0.5);
-        this.colliders[name] = this.collider;
-      }
+    const c = this.colliderCache[name];
+    if (c != null) {
+      this.collider = c;
+    } else {
+      this.collider = new Collider(image);
+      this.collider.setAnchor(0.5, 0.5);
+      this.colliderCache[name] = this.collider;
     }
     this.onRemove = () => {
       if (this.sprite != null) {
@@ -84,7 +98,7 @@ export class Actor extends sga.Actor {
   }
 
   updateFrame() {
-    super.updateFrame();
+    this.prevPos.set(this.pos);
     if (this.sprite != null) {
       this.sprite.x = this.pos.x;
       this.sprite.y = this.pos.y;
@@ -100,10 +114,12 @@ export class Actor extends sga.Actor {
     ) {
       this.remove();
     }
+    super.updateFrame();
   }
 }
 
 export function reset() {
-  textures = {};
-  ppc.clearCache();
+  imageCache = {};
+  textureCache = {};
+  clearCache();
 }
