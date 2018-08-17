@@ -1,6 +1,7 @@
 import * as sss from "sounds-some-sounds";
+import * as pag from "pixel-art-gen";
 import { spawn, update, reset } from "..";
-import { Actor, Rect } from "./util/canvas/actor";
+import { Actor } from "./util/pixi/actor";
 import {
   init,
   endGame,
@@ -19,11 +20,7 @@ import * as math from "./util/math";
 
 init({
   game: () => {
-    update(() => {
-      if (ticks % 30 === 0) {
-        particle.emit("e1", pointer.pos.x, pointer.pos.y);
-      }
-    });
+    spawn(player);
   },
   init: () => {
     update(() => {
@@ -34,3 +31,19 @@ init({
   actorClass: Actor,
   isDebugMode: true
 });
+
+async function player(a: Actor) {
+  a.pos.set(50, 20);
+  const images = await pag.generateImagesPromise(
+    `
+  -
+ --
+---`,
+    { isMirrorX: true }
+  );
+  a.setImage(images[0]);
+  a.update(() => {
+    a.pos.x = pointer.pos.x;
+    particle.emit("j_p", a.pos.x, a.pos.y, Math.PI / 2);
+  });
+}
