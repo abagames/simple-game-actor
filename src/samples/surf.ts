@@ -65,13 +65,17 @@ init({
   //isDebugMode: true
 });
 
-function player(a: Actor & { wallOn: boolean | Actor; isDead: boolean }) {
+function player(
+  a: Actor & { wallOn: boolean | Actor; onWallCount: number; isDead: boolean }
+) {
   a.setRect(5, 5);
   a.addRect(new Rect(3, 3, { offset: { y: -4 } }));
   a.addRect(new Rect(3, 3, { offset: { x: -4, y: -6 }, springRatio: 0.2 }));
   a.addRect(new Rect(3, 3, { offset: { x: 4, y: -6 }, springRatio: 0.2 }));
   a.pos.set(50, 20);
+  a.setPriority(0.5);
   a.wallOn = false;
+  a.onWallCount = 0;
   a.isDead = false;
   const sb = new Vector(0, -1);
   a.update(() => {
@@ -103,22 +107,13 @@ function player(a: Actor & { wallOn: boolean | Actor; isDead: boolean }) {
       }
     }
     if (a.wallOn) {
-      const isJustPressed = isUsingKeyboard
-        ? keyboard.isJustPressed
-        : pointer.isJustPressed;
-      if (isJustPressed) {
-        sss.play("j_p1");
-        a.vel.y = -3;
-        (a.wallOn as Actor).vel.y += 3;
+      a.pos.y += 3;
+      if (a.stepBack(a.wallOn as Actor, sb)) {
+        a.vel.y = 0;
+        a.onWallCount = 10;
+      }
+      if (a.vel.length > 0.3) {
         a.wallOn = false;
-      } else {
-        a.pos.y += 2;
-        if (a.stepBack(a.wallOn as Actor, sb)) {
-          a.vel.y = 0;
-        }
-        if (a.vel.length > 1) {
-          a.wallOn = false;
-        }
       }
     } else {
       const wo = a.getColliding(wall);
@@ -126,6 +121,7 @@ function player(a: Actor & { wallOn: boolean | Actor; isDead: boolean }) {
         a.stepBack(wo, sb);
         a.vel.y = 0;
         a.wallOn = wo;
+        a.onWallCount = 10;
         const ws = (wo as any).score;
         sss.play("h_w");
         if (ws != null) {
@@ -133,6 +129,21 @@ function player(a: Actor & { wallOn: boolean | Actor; isDead: boolean }) {
           (wo as any).score = null;
           sss.play("c_ow");
         }
+      }
+    }
+    if (a.onWallCount > 0) {
+      a.onWallCount--;
+      const isJustPressed = isUsingKeyboard
+        ? keyboard.isJustPressed
+        : pointer.isJustPressed;
+      if (isJustPressed) {
+        sss.play("j_p1");
+        a.vel.y = -3;
+        if (a.wallOn) {
+          (a.wallOn as Actor).vel.y += 3;
+        }
+        a.wallOn = false;
+        a.onWallCount = 0;
       }
     }
   });

@@ -5,6 +5,7 @@ export class Actor {
   ticks = 0;
   updaterPool = new Pool();
   onRemove: Function;
+  priority = 1;
 
   remove() {
     if (!this.isAlive) {
@@ -27,6 +28,11 @@ export class Actor {
 
   setPool(pool: Pool) {
     this.pool = pool;
+  }
+
+  setPriority(priority: number) {
+    this.priority = priority;
+    this.pool.enablePriority();
   }
 
   init(initFunc: (actor: AnyActor, ...args) => void, ...args) {
@@ -82,17 +88,25 @@ export interface UpdatedInstance {
   isAlive: boolean;
   updateFrame: Function;
   remove: Function;
+  priority?: number;
 }
 
 export class Pool {
   instances: UpdatedInstance[] = [];
   isRemovingAllInstances = false;
+  isPriorityEnabled = false;
 
   add(instance: UpdatedInstance) {
     this.instances.push(instance);
   }
 
   updateFrame() {
+    if (this.isPriorityEnabled) {
+      this.instances = stableSort(
+        this.instances,
+        (a, b) => b.priority - a.priority
+      );
+    }
     for (let i = 0; i < this.instances.length; ) {
       const instance = this.instances[i];
       if (instance.isAlive) {
@@ -122,6 +136,10 @@ export class Pool {
     });
     this.instances = [];
     this.isRemovingAllInstances = true;
+  }
+
+  enablePriority() {
+    this.isPriorityEnabled = true;
   }
 }
 
@@ -156,4 +174,13 @@ export function reset() {
 
 export function setActorClass(_actorClass) {
   actorClass = _actorClass;
+}
+
+function stableSort(values: any[], compareFunc: Function) {
+  const indexedValues = values.map((v, i) => [v, i]);
+  indexedValues.sort((a, b) => {
+    const cmp = compareFunc(a[0], b[0]);
+    return cmp !== 0 ? cmp : a[1] - b[1];
+  });
+  return indexedValues.map(v => v[0]);
 }
