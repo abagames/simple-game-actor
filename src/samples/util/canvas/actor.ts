@@ -11,6 +11,7 @@ export class Actor extends sga.Actor {
   speed = 0;
   angle = 0;
   rects: Rect[] = [];
+  stepBackVector = new Vector();
 
   setRect(
     width = 5,
@@ -51,22 +52,29 @@ export class Actor extends sga.Actor {
 
   stepBack(funcOrActor?: Function | Actor, angleVector?: Vector) {
     if (angleVector == null) {
-      angleVector = new Vector().set(this.prevPos).sub(this.pos);
+      this.stepBackVector.set(this.prevPos).sub(this.pos);
+    } else {
+      this.stepBackVector.set(angleVector);
     }
-    angleVector.normalize().div(2);
-    for (let i = 0; i < 99; i++) {
-      if (funcOrActor instanceof Actor) {
-        if (!this.testColliding(funcOrActor)) {
-          break;
-        }
-      } else if (!this.getColliding(funcOrActor)) {
-        break;
-      }
-      this.pos.add(angleVector);
+    this.stepBackVector.normalize().div(2);
+    let isColliding = false;
+    for (let i = 0; i < 9; i++) {
       this.rects.forEach(r => {
         r.updatePos(this.pos);
       });
+      if (funcOrActor instanceof Function) {
+        if (!this.getColliding(funcOrActor)) {
+          break;
+        }
+      } else {
+        if (!this.testColliding(funcOrActor)) {
+          break;
+        }
+      }
+      isColliding = true;
+      this.pos.add(this.stepBackVector);
     }
+    return isColliding;
   }
 
   updateFrame() {
@@ -76,6 +84,9 @@ export class Actor extends sga.Actor {
       r.updateFrame(this.pos, this.angle);
     });
     super.updateFrame();
+    /*if (this.func.name === "player") {
+      console.log(this.pos.y);
+    }*/
     if (
       this.pos.x < -screen.size * removePaddingRatio ||
       this.pos.x > screen.size * (1 + removePaddingRatio) ||

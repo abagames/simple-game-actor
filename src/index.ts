@@ -132,7 +132,6 @@ let actorClass = Actor;
 export function spawn(initFunc: (actor: AnyActor, ...args) => void, ...args) {
   const actor: AnyActor = new actorClass();
   actor.init(initFunc, ...args);
-  pool.add(actor);
   return actor;
 }
 

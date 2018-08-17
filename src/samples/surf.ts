@@ -35,8 +35,8 @@ init({
         wall,
         random.get(99),
         -5,
-        random.get(difficulty - 1) * random.getPlusOrMinus(),
-        random.get(0.1, difficulty),
+        random.get(difficulty - 1) * random.getPlusOrMinus() * 2,
+        random.get(0.1, difficulty) * 2,
         random.get(20, 70)
       );
     });
@@ -76,29 +76,26 @@ function player(a: Actor & { wallOn: boolean | Actor; isDead: boolean }) {
   const sb = new Vector(0, -1);
   a.update(() => {
     if (a.isDead) {
-      a.angle += 0.1;
-      a.vel.y += 0.2;
+      a.angle += 0.2;
+      a.vel.y += 0.4;
       return;
-    } else {
-      if (isUsingKeyboard) {
-        a.pos.x += keyboard.stick.x * 2;
-      } else {
-        a.pos.x = pointer.pos.x;
-      }
-      a.pos.x = math.clamp(a.pos.x, 0, 99);
-      const isPressed = isUsingKeyboard
-        ? keyboard.isPressed
-        : pointer.isPressed;
-      a.vel.y += isPressed ? 0.03 : 0.1;
     }
     if (a.pos.y > 120) {
-      a.vel.y = -6;
-      a.angle += 1;
+      a.vel.y = -10;
+      a.angle += 2;
       a.isDead = true;
       sss.playJingle("l_d", true);
       sss.stopBgm();
       endGame();
     }
+    if (isUsingKeyboard) {
+      a.pos.x += keyboard.stick.x * 4;
+    } else {
+      a.pos.x = pointer.pos.x;
+    }
+    a.pos.x = math.clamp(a.pos.x, 0, 99);
+    const isPressed = isUsingKeyboard ? keyboard.isPressed : pointer.isPressed;
+    a.vel.y += isPressed ? 0.06 : 0.24;
     if (a.pos.y < 0) {
       a.pos.y = 0;
       if (a.vel.y < 0) {
@@ -111,16 +108,17 @@ function player(a: Actor & { wallOn: boolean | Actor; isDead: boolean }) {
         : pointer.isJustPressed;
       if (isJustPressed) {
         sss.play("j_p1");
-        a.vel.y = -2;
-        (a.wallOn as Actor).vel.y += 2;
+        a.vel.y = -3;
+        (a.wallOn as Actor).vel.y += 3;
+        a.wallOn = false;
       } else {
-        a.pos.y += 1;
+        a.pos.y += 2;
         if (a.stepBack(a.wallOn as Actor, sb)) {
           a.vel.y = 0;
         }
-      }
-      if (a.vel.length > 1) {
-        a.wallOn = false;
+        if (a.vel.length > 1) {
+          a.wallOn = false;
+        }
       }
     } else {
       const wo = a.getColliding(wall);
@@ -146,7 +144,7 @@ function wall(a: Actor & { score: number }, x, y, vx, vy, width) {
   a.vel.set(vx, vy);
   const vxs = Math.abs(vx) + 1;
   const vys = Math.abs(vy) + 1;
-  a.score = Math.floor((vxs * vxs * vys * vys * 100) / width + 1) * 10;
+  a.score = Math.floor((vxs * vxs * vys * vys * 50) / width + 1) * 10;
   a.update(u => {
     if (a.score == null) {
       u.remove();
