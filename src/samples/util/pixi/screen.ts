@@ -1,5 +1,7 @@
 import * as PIXI from "pixi.js";
 import * as PIXIFilters from "pixi-filters";
+import * as pag from "pixel-art-gen";
+import * as ppe from "particle-pattern-emitter";
 import * as particle from "./particle";
 
 export let app: PIXI.Application;
@@ -20,6 +22,15 @@ export function init(
   const appSize = size + padding * 2;
   app = new PIXI.Application({ width: appSize, height: appSize });
   canvas = app.view;
+  document.body.style["background"] = "black";
+  /*pag.setDefaultOptions({
+    isLimitingColors: true,
+    colorNoise: 0,
+    colorLighting: 0.2
+  });
+  ppe.setOptions({
+    isLimitingColors: true
+  });*/
   app.view.setAttribute("id", "screen");
   document.body.appendChild(app.view);
   const filterContainer = new PIXI.Container();

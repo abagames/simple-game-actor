@@ -27,9 +27,6 @@ export function init(
   g.drawRect(0, 0, particleBaseSize, particleBaseSize);
   g.endFill();
   particleTexture = app.renderer.generateTexture(g);
-  ppe.setOptions({
-    //isLimitingColors: true
-  });
 }
 
 export function emit(
