@@ -11,6 +11,7 @@ export let isJustPressed = false;
 
 let cursorPos = new Vector();
 let isDown = false;
+let isClicked = false;
 let screen: HTMLElement;
 let pixelSize: Vector;
 let isInitialized = false;
@@ -90,7 +91,8 @@ export function update() {
   }
   const pp = isPressed;
   isPressed = isDown;
-  isJustPressed = !pp && isPressed;
+  isJustPressed = !pp && isClicked;
+  isClicked = false;
   if (isJustPressed) {
     pressedPos.set(pos);
     prevPos.set(pos);
@@ -130,7 +132,7 @@ function calcPointerPos(x, y, v) {
 
 function onDown(x, y) {
   cursorPos.set(x, y);
-  isDown = true;
+  isDown = isClicked = true;
 }
 
 function onMove(x, y) {
