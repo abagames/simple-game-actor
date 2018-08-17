@@ -5,19 +5,16 @@ export function draw(
   str: string,
   x: number,
   y: number,
-  options: {
+  {
+    align = "center",
+    style = "black",
+    scale = 1
+  }: {
     align?: "center" | "left" | "right";
     style?: string;
     scale?: number;
-  } = {
-    align: "center",
-    style: "black",
-    scale: 1
-  }
+  } = {}
 ) {
-  const align = options.align || "center";
-  const style = options.style || "black";
-  const scale = options.scale || 1;
   const lines = str.split("\n");
   let ly = y;
   lines.forEach(l => {

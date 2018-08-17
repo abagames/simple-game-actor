@@ -18,34 +18,32 @@ let beginGameFunc: Function;
 let beginGameOverFunc: Function;
 let beginTitleFunc: Function;
 let scene: "title" | "game" | "gameOver";
-let screen;
+let _screen;
 
 const isCapturing = false;
 
-export function init(
-  options: {
-    title?: Function;
-    game?: Function;
-    gameOver?: Function;
-    init?: Function;
-    screen: any;
-    actorClass?: any;
-    isDebugMode?: boolean;
-  } = {
-    title: null,
-    game: null,
-    gameOver: null,
-    init: null,
-    screen: null,
-    actorClass: null,
-    isDebugMode: false
-  }
-) {
-  beginTitleFunc = options.title;
-  beginGameFunc = options.game;
-  beginGameOverFunc = options.gameOver;
+export function init({
+  title,
+  game,
+  gameOver,
+  init,
+  screen,
+  actorClass,
+  isDebugMode = false
+}: {
+  title?: Function;
+  game?: Function;
+  gameOver?: Function;
+  init?: Function;
+  screen: any;
+  actorClass?: any;
+  isDebugMode?: boolean;
+}) {
+  beginTitleFunc = title;
+  beginGameFunc = game;
+  beginGameOverFunc = gameOver;
   sss.init();
-  screen = options.screen;
+  _screen = screen;
   screen.init();
   letterPattern.init();
   pointer.init(
@@ -54,20 +52,20 @@ export function init(
     new Vector(),
     sss.playEmpty,
     sss.resumeAudioContext,
-    options.isDebugMode
+    isDebugMode
   );
   if (enableKeyboard) {
     keyboard.init();
   }
-  if (options.actorClass != null) {
-    sga.setActorClass(options.actorClass);
+  if (actorClass != null) {
+    sga.setActorClass(actorClass);
   }
   if (isCapturing) {
     gcc.setOptions({ scale: 1 });
   }
   window.addEventListener("load", () => {
-    if (options.init != null) {
-      options.init();
+    if (init != null) {
+      init();
     }
     if (beginTitleFunc != null) {
       beginTitle();
@@ -93,12 +91,12 @@ function update() {
   if (enableKeyboard) {
     keyboard.update();
   }
-  screen.clear();
+  _screen.clear();
   sga.updateFrame();
   updateScene();
   ticks++;
   if (isCapturing) {
-    gcc.capture(screen.canvas);
+    gcc.capture(_screen.canvas);
   }
 }
 

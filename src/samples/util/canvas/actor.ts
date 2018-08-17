@@ -16,15 +16,15 @@ export class Actor extends sga.Actor {
   setRect(
     width = 5,
     height = 5,
-    options: {
+    {
+      color = "black",
+      offset = { x: 0, y: 0 }
+    }: {
       color?: string;
       offset?: { x?: number; y?: number };
-    } = {
-      color: "black",
-      offset: { x: 0, y: 0 }
-    }
+    } = {}
   ) {
-    this.addRect(new Rect(width, height, options));
+    this.addRect(new Rect(width, height, { color, offset }));
   }
 
   addRect(rect: Rect) {
@@ -110,22 +110,20 @@ export class Rect {
   constructor(
     width = 5,
     height = 5,
-    options: {
+    {
+      color = "black",
+      offset = { x: 0, y: 0 },
+      springRatio
+    }: {
       color?: string;
       offset?: { x?: number; y?: number };
       springRatio?: number;
-    } = {
-      color: "black",
-      offset: { x: 0, y: 0 },
-      springRatio: undefined
-    }
+    } = {}
   ) {
     this.size.set(width, height);
-    this.color = options.color || "black";
-    if (options.offset != null) {
-      this.offset.set(options.offset.x || 0, options.offset.y || 0);
-    }
-    this.springRatio = options.springRatio;
+    this.color = color;
+    this.offset.set(offset.x || 0, offset.y || 0);
+    this.springRatio = springRatio;
   }
 
   testColliding(other: Rect) {
