@@ -70,7 +70,11 @@ export function init({
     if (beginTitleFunc != null) {
       beginTitle();
     } else {
-      endGame();
+      if (isDebugMode) {
+        beginGame();
+      } else {
+        endGame();
+      }
     }
     update();
   });
