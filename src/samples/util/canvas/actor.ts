@@ -84,9 +84,6 @@ export class Actor extends sga.Actor {
       r.updateFrame(this.pos, this.angle);
     });
     super.updateFrame();
-    /*if (this.func.name === "player") {
-      console.log(this.pos.y);
-    }*/
     if (
       this.pos.x < -screen.size * removePaddingRatio ||
       this.pos.x > screen.size * (1 + removePaddingRatio) ||
