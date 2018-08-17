@@ -5,9 +5,11 @@ export declare class Actor {
     ticks: number;
     updaterPool: Pool;
     onRemove: Function;
+    priority: number;
     remove(): void;
-    update(updateFunc: (updater: Updater, actor: AnyActor) => void, interval?: number): void;
+    update(updateFunc: (updater: Updater, actor: AnyActor) => void, interval?: number): any;
     setPool(pool: Pool): void;
+    setPriority(priority: number): void;
     init(initFunc: (actor: AnyActor, ...args: any[]) => void, ...args: any[]): void;
     updateFrame(): void;
 }
@@ -32,19 +34,22 @@ export interface UpdatedInstance {
     isAlive: boolean;
     updateFrame: Function;
     remove: Function;
+    priority?: number;
 }
 export declare class Pool {
     instances: UpdatedInstance[];
     isRemovingAllInstances: boolean;
+    isPriorityEnabled: boolean;
     add(instance: UpdatedInstance): void;
     updateFrame(): void;
     get(func?: Function): UpdatedInstance[];
     removeAll(): void;
+    enablePriority(): void;
 }
 export declare const pool: Pool;
 export declare const updaterPool: Pool;
-export declare function spawn(initFunc: (actor: AnyActor, ...args: any[]) => void, ...args: any[]): void;
-export declare function update(updateFunc: (updater: Updater, actor: AnyActor) => void, interval?: number): void;
+export declare function spawn(initFunc: (actor: AnyActor, ...args: any[]) => void, ...args: any[]): AnyActor;
+export declare function update(updateFunc: (updater: Updater, actor: AnyActor) => void, interval?: number): Updater;
 export declare function updateFrame(): void;
 export declare function reset(): void;
 export declare function setActorClass(_actorClass: any): void;
