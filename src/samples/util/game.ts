@@ -1,11 +1,9 @@
 import * as sga from "../..";
 import * as sss from "sounds-some-sounds";
 import * as gcc from "gif-capture-canvas";
-import * as screen from "./screen";
-import * as text from "./text";
+import * as letterPattern from "./letterPattern";
 import * as pointer from "./pointer";
 import * as keyboard from "./keyboard";
-import { Actor } from "./actor";
 import Vector from "./vector";
 import Random from "./random";
 
@@ -20,6 +18,7 @@ let beginGameFunc: Function;
 let beginGameOverFunc: Function;
 let beginTitleFunc: Function;
 let scene: "title" | "game" | "gameOver";
+let screen;
 
 const isCapturing = false;
 
@@ -29,12 +28,16 @@ export function init(
     game?: Function;
     gameOver?: Function;
     init?: Function;
+    screen: any;
+    actorClass?: any;
     isDebugMode?: boolean;
   } = {
     title: null,
     game: null,
     gameOver: null,
     init: null,
+    screen: null,
+    actorClass: null,
     isDebugMode: false
   }
 ) {
@@ -42,8 +45,9 @@ export function init(
   beginGameFunc = options.game;
   beginGameOverFunc = options.gameOver;
   sss.init();
+  screen = options.screen;
   screen.init();
-  text.init();
+  letterPattern.init();
   pointer.init(
     screen.canvas,
     new Vector(screen.size),
@@ -55,7 +59,9 @@ export function init(
   if (enableKeyboard) {
     keyboard.init();
   }
-  sga.setActorClass(Actor);
+  if (options.actorClass != null) {
+    sga.setActorClass(options.actorClass);
+  }
   if (isCapturing) {
     gcc.setOptions({ scale: 1 });
   }

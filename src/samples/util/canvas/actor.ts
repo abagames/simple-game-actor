@@ -1,6 +1,6 @@
-import * as sga from "../..";
+import * as sga from "../../..";
 import * as screen from "./screen";
-import Vector from "./vector";
+import Vector from "../vector";
 
 const removePaddingRatio = 0.5;
 
@@ -49,16 +49,17 @@ export class Actor extends sga.Actor {
     return false;
   }
 
-  stepBack(func?: Function | Actor, angleVector?: Vector) {
+  stepBack(funcOrActor?: Function | Actor, angleVector?: Vector) {
     if (angleVector == null) {
       angleVector = new Vector().set(this.prevPos).sub(this.pos);
     }
     angleVector.normalize().div(2);
     for (let i = 0; i < 99; i++) {
-      if (
-        (typeof func === "string" && !this.getColliding(func)) ||
-        (func instanceof Actor && !this.testColliding(func))
-      ) {
+      if (funcOrActor instanceof Actor) {
+        if (!this.testColliding(funcOrActor)) {
+          break;
+        }
+      } else if (!this.getColliding(funcOrActor)) {
         break;
       }
       this.pos.add(angleVector);

@@ -1,6 +1,6 @@
-import { spawn, update, reset } from "..";
 import * as sss from "sounds-some-sounds";
-import { Actor, Rect } from "./util/actor";
+import { spawn, update, reset } from "..";
+import { Actor, Rect } from "./util/canvas/actor";
 import {
   init,
   endGame,
@@ -9,10 +9,10 @@ import {
   difficulty,
   isUsingKeyboard
 } from "./util/game";
+import * as screen from "./util/canvas/screen";
+import * as text from "./util/canvas/text";
 import * as pointer from "./util/pointer";
 import * as keyboard from "./util/keyboard";
-import * as screen from "./util/screen";
-import * as text from "./util/text";
 import Vector from "./util/vector";
 import * as math from "./util/math";
 
@@ -59,7 +59,9 @@ init({
   },
   init: () => {
     sss.setSeed(2);
-  }
+  },
+  screen: screen,
+  actorClass: Actor
   //isDebugMode: true
 });
 
