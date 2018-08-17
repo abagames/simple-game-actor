@@ -61,9 +61,11 @@ function particle(
   p.sprite.anchor.x = p.sprite.anchor.y = 0.5;
   p.sprite.scale = p.scale;
   particleContainer.addChild(p.sprite);
+  p.onRemove = () => {
+    particleContainer.removeChild(p.sprite);
+  };
   p.update(() => {
     if (!ppe.isAlive) {
-      particleContainer.removeChild(p.sprite);
       p.remove();
       return;
     }
