@@ -3,7 +3,7 @@ import { Collider, clearCache } from "pixel-perfect-collider";
 import * as screen from "./screen";
 import Vector from "../vector";
 
-const removePaddingRatio = 0.25;
+const removePaddingRatio = 0.5;
 let imageCache: { [key: string]: HTMLImageElement[] } = {};
 let textureCache: { [key: string]: PIXI.Texture[] } = {};
 
@@ -99,6 +99,7 @@ export class Actor extends sga.Actor {
 
   updateFrame() {
     this.prevPos.set(this.pos);
+    this.pos.add(this.vel);
     if (this.sprite != null) {
       this.sprite.x = this.pos.x;
       this.sprite.y = this.pos.y;
