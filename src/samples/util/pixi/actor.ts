@@ -18,7 +18,7 @@ export class Actor extends sga.Actor {
   collider: Collider;
   colliderCache: { [key: string]: Collider } = {};
 
-  setImage(image: HTMLImageElement) {
+  setImage(image: HTMLImageElement, hasCollider = true) {
     const name = this.func.name;
     let cachedImages = imageCache[name];
     if (cachedImages == null) {
@@ -38,23 +38,16 @@ export class Actor extends sga.Actor {
       textureCache[name].push(texture);
     }
     this.setTextureToSprite(texture);
-    this.size.x = image.width;
-    this.size.y = image.height;
-    const c = this.colliderCache[name];
-    if (c != null) {
-      this.collider = c;
-    } else {
-      this.collider = new Collider(image);
-      this.collider.setAnchor(0.5, 0.5);
-      this.colliderCache[name] = this.collider;
-    }
-    this.onRemove = () => {
-      if (this.sprite != null) {
-        screen.container.removeChild(this.sprite);
-        this.sprite.anchor.x = 0.5;
-        this.sprite.anchor.y = 0.5;
+    if (hasCollider) {
+      const c = this.colliderCache[name];
+      if (c != null) {
+        this.collider = c;
+      } else {
+        this.collider = new Collider(image);
+        this.collider.setAnchor(0.5, 0.5);
+        this.colliderCache[name] = this.collider;
       }
-    };
+    }
   }
 
   setGraphics(g: PIXI.Graphics, app: PIXI.Application) {
@@ -73,6 +66,15 @@ export class Actor extends sga.Actor {
     } else {
       this.sprite.texture = texture;
     }
+    this.size.x = texture.width;
+    this.size.y = texture.height;
+    this.onRemove = () => {
+      if (this.sprite != null) {
+        screen.container.removeChild(this.sprite);
+        this.sprite.anchor.x = 0.5;
+        this.sprite.anchor.y = 0.5;
+      }
+    };
   }
 
   testColliding(other: Actor) {

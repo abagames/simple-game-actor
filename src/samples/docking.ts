@@ -12,7 +12,7 @@ import {
 } from "./util/game";
 import * as screen from "./util/pixi/screen";
 import * as particle from "./util/pixi/particle";
-//import * as text from "./util/pixi/text";
+import { text } from "./util/pixi/text";
 import * as pointer from "./util/pointer";
 import * as keyboard from "./util/keyboard";
 import Vector from "./util/vector";
@@ -20,6 +20,8 @@ import * as math from "./util/math";
 
 init({
   game: () => {
+    const ta = spawn(text, "TElST");
+    ta.pos.set(20, 30);
     spawn(ship);
   },
   init: () => {
