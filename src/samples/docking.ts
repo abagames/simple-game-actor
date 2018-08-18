@@ -20,7 +20,7 @@ import * as math from "./util/math";
 
 init({
   game: () => {
-    spawn(player);
+    spawn(ship);
   },
   init: () => {
     update(() => {
@@ -32,7 +32,7 @@ init({
   isDebugMode: true
 });
 
-async function player(a: Actor) {
+async function ship(a: Actor) {
   a.pos.set(50, 20);
   const images = await pag.generateImagesPromise(
     `
@@ -43,7 +43,9 @@ async function player(a: Actor) {
   );
   a.setImage(images[0]);
   a.update(() => {
-    a.pos.x = pointer.pos.x;
+    a.vel.x += (pointer.pos.x - a.pos.x) * 0.0025;
+    a.vel.y += (pointer.pos.y - a.pos.y) * 0.005;
+    a.vel.mul(0.9);
     particle.emit("j_p", a.pos.x, a.pos.y, Math.PI / 2);
   });
 }
