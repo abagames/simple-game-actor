@@ -1,4 +1,5 @@
 export const size = 100;
+export let padding = 0;
 export const pixelRatio = 2;
 
 export let canvas: HTMLCanvasElement;

@@ -49,7 +49,7 @@ export function init({
   pointer.init(
     screen.canvas,
     new Vector(screen.size),
-    new Vector(),
+    new Vector(screen.padding),
     sss.playEmpty,
     sss.resumeAudioContext,
     isDebugMode
