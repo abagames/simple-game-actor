@@ -62,7 +62,7 @@ function drawToTexture(
     lx = Math.max(l.length * lw, lx);
     ly += 6 * scale;
   });
-  canvas.width = Math.floor(lx / 2) * 2;
+  canvas.width = Math.ceil(lx / 2) * 2;
   canvas.height = ly;
   const context = canvas.getContext("2d");
   context.clearRect(0, 0, lx, ly);

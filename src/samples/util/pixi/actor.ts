@@ -30,6 +30,8 @@ export class Actor extends sga.Actor {
     if (ci >= 0) {
       texture = textureCache[ci];
     } else {
+      image.width = Math.ceil(image.width / 2) * 2;
+      image.height = Math.ceil(image.height / 2) * 2;
       texture = PIXI.Texture.fromLoader(
         image,
         `${name}_${cachedImages.length}`
@@ -103,11 +105,11 @@ export class Actor extends sga.Actor {
     this.prevPos.set(this.pos);
     this.pos.add(this.vel);
     if (this.sprite != null) {
-      this.sprite.x = this.pos.x;
-      this.sprite.y = this.pos.y;
+      this.sprite.x = Math.round(this.pos.x);
+      this.sprite.y = Math.round(this.pos.y);
     }
     if (this.collider != null) {
-      this.collider.setPos(this.pos.x, this.pos.y);
+      this.collider.setPos(Math.round(this.pos.x), Math.round(this.pos.y));
     }
     if (
       this.pos.x < -screen.size * removePaddingRatio ||

@@ -66,13 +66,13 @@ function particle(
       p.remove();
       return;
     }
-    p.sprite.x = ppe.pos.x;
-    p.sprite.y = ppe.pos.y;
+    p.sprite.x = Math.round(ppe.pos.x);
+    p.sprite.y = Math.round(ppe.pos.y);
     p.sprite.tint =
       (Math.floor(ppe.color.r * 255) << 16) |
       (Math.floor(ppe.color.g * 255) << 8) |
       Math.floor(ppe.color.b * 255);
-    p.scale.x = p.scale.y = ppe.size / particleBaseSize;
+    p.scale.x = p.scale.y = (Math.round(ppe.size / 2) * 2) / particleBaseSize;
     p.sprite.scale = p.scale;
   });
 }
