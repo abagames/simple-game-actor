@@ -153,7 +153,7 @@ export function spawn(initFunc: (actor: AnyActor, ...args) => void, ...args) {
   return actor;
 }
 
-export function update(
+export function addUpdater(
   updateFunc: (updater: Updater, actor: AnyActor) => void,
   interval = 1
 ) {

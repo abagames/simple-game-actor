@@ -1,5 +1,5 @@
 import * as sss from "sounds-some-sounds";
-import { spawn, update, reset } from "..";
+import { spawn, addUpdater, reset } from "..";
 import { Actor, Rect } from "./util/canvas/actor";
 import {
   init,
@@ -24,12 +24,12 @@ init({
     reset();
     score = 0;
     sss.playBgm();
-    update(() => {
+    addUpdater(() => {
       text.draw(`${score}`, 1, 1, { align: "left" });
     });
     spawn(wall, 50, 80, 0, 0.1, 99);
     spawn(player);
-    update(u => {
+    addUpdater(u => {
       u.setInterval(20 / difficulty);
       spawn(
         wall,
@@ -42,7 +42,7 @@ init({
     });
   },
   gameOver: () => {
-    gameOverUpdater = update(() => {
+    gameOverUpdater = addUpdater(() => {
       text.draw("GAME OVER", 50, 45);
     });
   },
@@ -50,7 +50,7 @@ init({
     if (gameOverUpdater != null) {
       gameOverUpdater.remove();
     }
-    update(() => {
+    addUpdater(() => {
       text.draw("BOARD\nSURF", 50, 32, { scale: 2 });
       if (ticks % 60 < 30) {
         text.draw("CLICK OR TAP\nTO START", 50, 75);
