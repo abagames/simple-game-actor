@@ -17,7 +17,7 @@ export class Actor {
     this.isAlive = false;
   }
 
-  update(
+  addUpdater(
     updateFunc: (updater: Updater, actor: AnyActor) => void,
     interval = 1
   ) {

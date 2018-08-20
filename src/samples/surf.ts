@@ -78,7 +78,7 @@ function player(
   a.onWallCount = 0;
   a.isDead = false;
   const sb = new Vector(0, -1);
-  a.update(() => {
+  a.addUpdater(() => {
     if (a.isDead) {
       a.angle += 0.2;
       a.vel.y += 0.4;
@@ -156,7 +156,7 @@ function wall(a: Actor & { score: number }, x, y, vx, vy, width) {
   const vxs = Math.abs(vx) + 1;
   const vys = Math.abs(vy) + 1;
   a.score = Math.floor((vxs * vxs * vys * vys * 50) / width + 1) * 10;
-  a.update(u => {
+  a.addUpdater(u => {
     if (a.score == null) {
       u.remove();
       return;
@@ -170,7 +170,7 @@ function scoreBoard(a: Actor, pos, _score) {
   score += _score;
   a.pos.set(pos);
   a.vel.y = -1;
-  a.update(() => {
+  a.addUpdater(() => {
     a.vel.y *= 0.9;
     text.draw(`${_score}`, a.pos.x, a.pos.y - 3);
     if (a.ticks > 60) {

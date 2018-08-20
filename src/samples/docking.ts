@@ -44,7 +44,7 @@ async function ship(a: Actor) {
     { isMirrorX: true }
   );
   a.setImage(images[0]);
-  a.update(() => {
+  a.addUpdater(() => {
     a.vel.x += (pointer.pos.x - a.pos.x) * 0.0025;
     a.vel.y += (pointer.pos.y - a.pos.y) * 0.005;
     a.vel.mul(0.9);

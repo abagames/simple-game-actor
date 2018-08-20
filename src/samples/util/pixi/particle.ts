@@ -61,7 +61,7 @@ function particle(
   p.onRemove = () => {
     particleContainer.removeChild(p.sprite);
   };
-  p.update(() => {
+  p.addUpdater(() => {
     if (!ppe.isAlive) {
       p.remove();
       return;
