@@ -1,6 +1,7 @@
 import * as sss from "sounds-some-sounds";
 import * as pag from "pixel-art-gen";
-import { spawn, update, reset } from "..";
+import * as ppe from "particle-pattern-emitter";
+import { spawn, addUpdater, reset } from "..";
 import { Actor } from "./util/pixi/actor";
 import {
   init,
@@ -18,13 +19,22 @@ import * as keyboard from "./util/keyboard";
 import Vector from "./util/vector";
 import { range } from "./util/math";
 
+let wind = new Vector();
+
 init({
   game: () => {
     spawn(ship, 0, true);
     spawn(ship, 1);
+    addUpdater(() => {
+      wind.x += random.get(-0.02, 0.02);
+      wind.y += random.get(-0.01, 0.01);
+      wind.mul(0.9);
+    });
   },
   init: () => {
-    update(() => {
+    pag.setSeed(7);
+    ppe.setSeed(2);
+    addUpdater(() => {
       particle.updateFrame();
     });
   },
@@ -56,8 +66,11 @@ async function ship(a: Actor, size = 0, isPlayer = false) {
     a.addUpdater(() => {
       a.vel.x += (pointer.pos.x - a.pos.x) * 0.0025;
       a.vel.y += (pointer.pos.y - a.pos.y) * 0.005;
+      a.vel.add(wind);
       a.vel.mul(0.9);
-      particle.emit("j_p", a.pos.x, a.pos.y, Math.PI / 2);
+      particle.emit("j_p", a.pos.x, a.pos.y, Math.PI / 2, {
+        sizeScale: 0.5 + size * 0.5
+      });
     });
   }
 }
