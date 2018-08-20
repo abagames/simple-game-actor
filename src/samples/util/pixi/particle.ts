@@ -41,9 +41,9 @@ export function emit(
   });
 }
 
-export function updateFrame() {
+export function update() {
   ppe.update();
-  pool.updateFrame();
+  pool.update();
 }
 
 let pool = new sga.Pool();

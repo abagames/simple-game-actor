@@ -35,7 +35,7 @@ init({
     pag.setSeed(7);
     ppe.setSeed(2);
     addUpdater(() => {
-      particle.updateFrame();
+      particle.update();
     });
   },
   screen: screen,

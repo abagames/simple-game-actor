@@ -77,13 +77,13 @@ export class Actor extends sga.Actor {
     return isColliding;
   }
 
-  updateFrame() {
+  update() {
     this.prevPos.set(this.pos);
     this.pos.add(this.vel);
     this.rects.forEach(r => {
-      r.updateFrame(this.pos, this.angle);
+      r.update(this.pos, this.angle);
     });
-    super.updateFrame();
+    super.update();
     if (
       this.pos.x < -screen.size * removePaddingRatio ||
       this.pos.x > screen.size * (1 + removePaddingRatio) ||
@@ -135,7 +135,7 @@ export class Rect {
     );
   }
 
-  updateFrame(pos: Vector, angle: number = 0) {
+  update(pos: Vector, angle: number = 0) {
     if (this.springRatio != null) {
       if (this.isFirstFrame) {
         this.isFirstFrame = false;

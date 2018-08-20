@@ -41,8 +41,8 @@ export class Actor {
     this.pool.add(this);
   }
 
-  updateFrame() {
-    this.updaterPool.updateFrame();
+  update() {
+    this.updaterPool.update();
     this.ticks++;
   }
 }
@@ -73,7 +73,7 @@ export class Updater {
     this.func = updateFunc;
   }
 
-  updateFrame() {
+  update() {
     this.intervalTicks--;
     if (this.intervalTicks <= 0) {
       this.updateFunc(this, this.actor);
@@ -86,7 +86,7 @@ export class Updater {
 export interface UpdatedInstance {
   func: Function;
   isAlive: boolean;
-  updateFrame: Function;
+  update: Function;
   remove: Function;
   priority?: number;
 }
@@ -100,7 +100,7 @@ export class Pool {
     this.instances.push(instance);
   }
 
-  updateFrame() {
+  update() {
     if (this.isPriorityEnabled) {
       this.instances = stableSort(
         this.instances,
@@ -110,7 +110,7 @@ export class Pool {
     for (let i = 0; i < this.instances.length; ) {
       const instance = this.instances[i];
       if (instance.isAlive) {
-        instance.updateFrame();
+        instance.update();
       }
       if (this.isRemovingAllInstances) {
         this.isRemovingAllInstances = false;
@@ -162,9 +162,9 @@ export function addUpdater(
   return updater;
 }
 
-export function updateFrame() {
-  pool.updateFrame();
-  updaterPool.updateFrame();
+export function update() {
+  pool.update();
+  updaterPool.update();
 }
 
 export function reset() {

@@ -101,7 +101,7 @@ export class Actor extends sga.Actor {
     return false;
   }
 
-  updateFrame() {
+  update() {
     this.prevPos.set(this.pos);
     this.pos.add(this.vel);
     if (this.sprite != null) {
@@ -119,7 +119,7 @@ export class Actor extends sga.Actor {
     ) {
       this.remove();
     }
-    super.updateFrame();
+    super.update();
   }
 }
 

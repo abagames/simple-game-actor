@@ -96,7 +96,7 @@ function update() {
     keyboard.update();
   }
   _screen.clear();
-  sga.updateFrame();
+  sga.update();
   updateScene();
   ticks++;
   if (isCapturing) {
