@@ -21,11 +21,26 @@ import { range } from "./util/math";
 
 let wind = new Vector();
 let topShip: AnyActor;
+let score: number;
+let scoreText: AnyActor;
+const startFuel = 360;
+let fuel: number;
+let fuelText: AnyActor;
 
 init({
   game: () => {
+    reset();
+    addUpdater(() => {
+      particle.update();
+    });
     spawn(ship, 0, true);
     topShip = spawn(ship, 1);
+    score = 0;
+    scoreText = spawn(text, "0");
+    scoreText.pos.set(2, 2);
+    fuel = startFuel;
+    fuelText = spawn(text, "");
+    fuelText.pos.set(98, 2);
     range(50).forEach(() => spawn(star));
     addUpdater(() => {
       wind.x += random.get(-0.02, 0.02);
@@ -36,9 +51,6 @@ init({
   init: () => {
     pag.setSeed(7);
     ppe.setSeed(2);
-    addUpdater(() => {
-      particle.update();
-    });
   },
   screen: screen,
   actorClass: Actor,
@@ -91,6 +103,12 @@ async function ship(
     a.vel.y += ((pointer.pos.y - a.pos.y) * 0.001) / Math.sqrt(size + 1);
     a.vel.add(wind);
     a.vel.mul(1 - 0.1 / Math.sqrt(size + 1));
+    fuelText.setText(`${fuel}`, { align: "right" });
+    fuel--;
+    if (!a.pos.isInRect(-10, 10, 120, 120) || fuel < 0) {
+      removeAllShips();
+      return;
+    }
     particle.emit(
       `j_s_${size}`,
       a.pos.x,
@@ -103,6 +121,7 @@ async function ship(
     );
     if (a.getColliding(ship)) {
       if (Math.abs(a.pos.x - 50) < 5) {
+        addScore(a.pos, fuel, size + 1);
         dockedShip = topShip;
         a.isPlayer = false;
         a.collider = null;
@@ -110,16 +129,22 @@ async function ship(
         topShip.targetPos.set(50, 20);
         topShip.targetMoveTicks = 30;
         topShip = spawn(ship, size + 2);
+        fuel = startFuel;
       } else {
-        pool.get(ship).forEach(s => {
-          s.remove();
-        });
+        removeAllShips();
       }
     }
   });
 }
 
-async function star(a: Actor) {
+function removeAllShips() {
+  pool.get(ship).forEach(s => {
+    s.remove();
+  });
+  endGame();
+}
+
+function star(a: Actor) {
   a.pos.set(random.get(99), random.get(99));
   a.vel.set(0, random.get(0.1, 0.5));
   const g = new PIXI.Graphics();
@@ -134,6 +159,23 @@ async function star(a: Actor) {
   a.addUpdater(() => {
     if (a.pos.y > 99) {
       a.pos.y -= 99;
+    }
+  });
+}
+
+function addScore(pos: Vector, _score, multiplier = 1) {
+  score += _score * multiplier;
+  scoreText.setText(`${score}`, { align: "left" });
+  const a = spawn(
+    text,
+    multiplier === 1 ? `${_score}` : `${_score}X${multiplier}`
+  );
+  a.pos.set(pos);
+  a.vel.y = -1;
+  a.addUpdater(() => {
+    a.vel.y *= 0.9;
+    if (a.ticks > 60) {
+      a.remove();
     }
   });
 }
