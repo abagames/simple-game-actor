@@ -1,7 +1,7 @@
 import * as sss from "sounds-some-sounds";
 import * as pag from "pixel-art-gen";
 import * as ppe from "particle-pattern-emitter";
-import { spawn, addUpdater, reset, AnyActor } from "..";
+import { spawn, addUpdater, reset, AnyActor, pool } from "..";
 import { Actor } from "./util/pixi/actor";
 import {
   init,
@@ -45,16 +45,14 @@ init({
 });
 
 async function ship(
-  a: Actor,
+  a: Actor & { isPlayer: boolean; targetPos: Vector; targetMoveTicks: number },
   size = 0,
-  isPlayer = false,
-  dockedShip: AnyActor = null
+  isPlayer = false
 ) {
-  if (isPlayer) {
-    a.pos.set(50, 20);
-  } else {
-    a.pos.set(50, 90);
-  }
+  let dockedShip: AnyActor = null;
+  a.pos.set(50, 120);
+  a.targetPos = new Vector(50, isPlayer ? 20 : 90);
+  a.targetMoveTicks = 30;
   const shipStr = range(4 + (size % 2)).map(
     i =>
       `${range(size + 3 - i)
@@ -68,28 +66,54 @@ async function ship(
     scale: Math.floor(size * 0.5) + 1
   });
   a.setImage(images[0]);
-  if (isPlayer) {
-    a.addUpdater(() => {
-      if (dockedShip != null) {
-        a.pos.set(dockedShip.pos.x, dockedShip.pos.y - dockedShip.size.y * 0.7);
-        return;
-      }
-      a.vel.x += ((pointer.pos.x - a.pos.x) * 0.0025) / Math.sqrt(size + 1);
-      a.vel.y += ((pointer.pos.y - a.pos.y) * 0.005) / Math.sqrt(size + 1);
-      a.vel.add(wind);
-      a.vel.mul(1 - 0.1 / Math.sqrt(size + 1));
-      particle.emit("j_p", a.pos.x, a.pos.y, Math.PI / 2 + a.vel.x * 0.05, {
+  a.isPlayer = isPlayer;
+  a.onRemove = () => {
+    particle.emit(`e_s_${size}`, a.pos.x, a.pos.y, 0, {
+      sizeScale: size * 0.5 + 1
+    });
+  };
+  a.addUpdater(() => {
+    if (dockedShip != null) {
+      a.pos.set(dockedShip.pos.x, dockedShip.pos.y - dockedShip.size.y * 0.7);
+      return;
+    }
+    if (a.targetMoveTicks > 0) {
+      a.pos.x += (a.targetPos.x - a.pos.x) / a.targetMoveTicks;
+      a.pos.y += (a.targetPos.y - a.pos.y) / a.targetMoveTicks;
+      a.targetMoveTicks--;
+      return;
+    }
+    if (!a.isPlayer) {
+      return;
+    }
+    a.vel.x += ((pointer.pos.x - a.pos.x) * 0.0025) / Math.sqrt(size + 1);
+    a.vel.y += ((pointer.pos.y - a.pos.y) * 0.005) / Math.sqrt(size + 1);
+    a.vel.add(wind);
+    a.vel.mul(1 - 0.1 / Math.sqrt(size + 1));
+    particle.emit(
+      `j_s_${size}`,
+      a.pos.x,
+      a.pos.y + a.size.y / 2,
+      Math.PI / 2 + a.vel.x * 0.05,
+      {
         sizeScale: 0.5 + size * (0.5 - a.vel.y),
         countScale: 1 - a.vel.y
-      });
-      if (a.getColliding(ship)) {
-        if (Math.abs(a.pos.x - 50) < 5) {
-          dockedShip = topShip;
-        } else {
-          particle.emit("e_p", a.pos.x, a.pos.y, 0, { sizeScale: size + 1 });
-          a.remove();
-        }
       }
-    });
-  }
+    );
+    if (a.getColliding(ship)) {
+      if (Math.abs(a.pos.x - 50) < 5) {
+        dockedShip = topShip;
+        a.isPlayer = false;
+        a.collider = null;
+        topShip.isPlayer = true;
+        topShip.targetPos.set(50, 20);
+        topShip.targetMoveTicks = 30;
+        topShip = spawn(ship, size + 2);
+      } else {
+        pool.get(ship).forEach(s => {
+          s.remove();
+        });
+      }
+    }
+  });
 }

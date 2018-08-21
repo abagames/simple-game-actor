@@ -70,17 +70,10 @@ export class Actor extends sga.Actor {
     }
     this.size.x = texture.width;
     this.size.y = texture.height;
-    this.onRemove = () => {
-      if (this.sprite != null) {
-        screen.container.removeChild(this.sprite);
-        this.sprite.anchor.x = 0.5;
-        this.sprite.anchor.y = 0.5;
-      }
-    };
   }
 
   testColliding(other: Actor) {
-    if (this.collider == null ||other.collider == null ||this === other) {
+    if (this.collider == null || other.collider == null || this === other) {
       return false;
     }
     return this.collider.test(other.collider);
@@ -120,6 +113,13 @@ export class Actor extends sga.Actor {
       this.remove();
     }
     super.update();
+  }
+
+  remove() {
+    if (this.sprite != null) {
+      screen.container.removeChild(this.sprite);
+    }
+    super.remove();
   }
 }
 
