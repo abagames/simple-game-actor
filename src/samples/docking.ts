@@ -68,8 +68,9 @@ async function ship(a: Actor, size = 0, isPlayer = false) {
       a.vel.y += (pointer.pos.y - a.pos.y) * 0.005;
       a.vel.add(wind);
       a.vel.mul(0.9);
-      particle.emit("j_p", a.pos.x, a.pos.y, Math.PI / 2, {
-        sizeScale: 0.5 + size * 0.5
+      particle.emit("j_p", a.pos.x, a.pos.y, Math.PI / 2 + a.vel.x * 0.05, {
+        sizeScale: 0.5 + size * (0.5 - a.vel.y),
+        countScale: 1 - a.vel.y
       });
     });
   }
