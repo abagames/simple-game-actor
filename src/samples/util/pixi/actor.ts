@@ -46,7 +46,6 @@ export class Actor extends sga.Actor {
         this.collider = c;
       } else {
         this.collider = new Collider(image);
-        this.collider.setPos(-999, -999);
         this.collider.setAnchor(0.5, 0.5);
         this.colliderCache[name] = this.collider;
       }
@@ -81,13 +80,7 @@ export class Actor extends sga.Actor {
   }
 
   testColliding(other: Actor) {
-    if (
-      this.collider == null ||
-      other.collider == null ||
-      this === other ||
-      (this.collider as any).pos.x < -900 ||
-      (other.collider as any).pos.x < -900
-    ) {
+    if (this.collider == null ||other.collider == null ||this === other) {
       return false;
     }
     return this.collider.test(other.collider);
