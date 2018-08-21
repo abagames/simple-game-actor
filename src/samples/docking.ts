@@ -1,6 +1,6 @@
-import * as sss from "sounds-some-sounds";
 import * as pag from "pixel-art-gen";
 import * as ppe from "particle-pattern-emitter";
+import * as sss from "sounds-some-sounds";
 import { spawn, addUpdater, reset, AnyActor, pool } from "..";
 import { Actor } from "./util/pixi/actor";
 import {
@@ -47,10 +47,12 @@ init({
       wind.y += random.get(-0.01, 0.01);
       wind.mul(0.9);
     });
+    sss.playBgm();
   },
   init: () => {
     pag.setSeed(7);
     ppe.setSeed(2);
+    sss.setSeed(120);
   },
   screen: screen,
   actorClass: Actor,
@@ -130,6 +132,7 @@ async function ship(
         topShip.targetMoveTicks = 30;
         topShip = spawn(ship, size + 2);
         fuel = startFuel;
+        sss.playJingle("s_d", false, undefined, 4);
       } else {
         removeAllShips();
       }
@@ -138,6 +141,8 @@ async function ship(
 }
 
 function removeAllShips() {
+  sss.playJingle("e_d", true);
+  sss.stopBgm();
   pool.get(ship).forEach(s => {
     s.remove();
   });
