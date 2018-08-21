@@ -26,8 +26,18 @@ let scoreText: AnyActor;
 const startFuel = 360;
 let fuel: number;
 let fuelText: AnyActor;
+let gameOverText: AnyActor;
 
 init({
+  title: () => {
+    if (gameOverText != null) {
+      gameOverText.remove();
+    } else {
+      range(50).forEach(() => spawn(star));
+    }
+    spawn(titleBoard);
+    spawn(text, "CLICK/TAP TO START").pos.set(50, 60);
+  },
   game: () => {
     reset();
     addUpdater(() => {
@@ -49,14 +59,18 @@ init({
     });
     sss.playBgm();
   },
+  gameOver: () => {
+    fuelText.remove();
+    gameOverText = spawn(text, "GAME OVER");
+    gameOverText.pos.set(50, 40);
+  },
   init: () => {
     pag.setSeed(7);
     ppe.setSeed(2);
-    sss.setSeed(120);
+    sss.setSeed(129);
   },
   screen: screen,
-  actorClass: Actor,
-  isDebugMode: true
+  actorClass: Actor
 });
 
 async function ship(
@@ -132,7 +146,7 @@ async function ship(
         topShip.targetMoveTicks = 30;
         topShip = spawn(ship, size + 2);
         fuel = startFuel;
-        sss.playJingle("s_d", false, undefined, 4);
+        sss.playJingle("l_d", false, undefined, 4);
       } else {
         removeAllShips();
       }
@@ -141,7 +155,7 @@ async function ship(
 }
 
 function removeAllShips() {
-  sss.playJingle("e_d", true);
+  sss.playJingle("h_r", true);
   sss.stopBgm();
   pool.get(ship).forEach(s => {
     s.remove();
@@ -183,4 +197,16 @@ function addScore(pos: Vector, _score, multiplier = 1) {
       a.remove();
     }
   });
+}
+
+async function titleBoard(a: Actor) {
+  const images = await pag.generateImagesPromise("DOCKING", {
+    isUsingLetterForm: true,
+    letterWidthRatio: 0.6,
+    colorLighting: 0.3,
+    isAddingEdgeFirst: true,
+    letterFormChar: "*"
+  });
+  a.setImage(images[0]);
+  a.pos.set(50, 25);
 }
