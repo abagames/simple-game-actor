@@ -28,7 +28,7 @@ export class Actor extends sga.Actor {
     let texture;
     const ci = cachedImages.indexOf(image);
     if (ci >= 0) {
-      texture = textureCache[ci];
+      texture = textureCache[name][ci];
     } else {
       image.width = Math.ceil(image.width / 2) * 2;
       image.height = Math.ceil(image.height / 2) * 2;
@@ -52,8 +52,8 @@ export class Actor extends sga.Actor {
     }
   }
 
-  setGraphics(g: PIXI.Graphics, app: PIXI.Application) {
-    let texture = app.renderer.generateTexture(g);
+  setGraphics(g: PIXI.Graphics) {
+    let texture = screen.app.renderer.generateTexture(g);
     this.setTextureToSprite(texture);
   }
 

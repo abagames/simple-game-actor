@@ -26,6 +26,7 @@ init({
   game: () => {
     spawn(ship, 0, true);
     topShip = spawn(ship, 1);
+    range(50).forEach(() => spawn(star));
     addUpdater(() => {
       wind.x += random.get(-0.02, 0.02);
       wind.y += random.get(-0.01, 0.01);
@@ -86,8 +87,8 @@ async function ship(
     if (!a.isPlayer) {
       return;
     }
-    a.vel.x += ((pointer.pos.x - a.pos.x) * 0.0025) / Math.sqrt(size + 1);
-    a.vel.y += ((pointer.pos.y - a.pos.y) * 0.005) / Math.sqrt(size + 1);
+    a.vel.x += ((pointer.pos.x - a.pos.x) * 0.005) / Math.sqrt(size + 1);
+    a.vel.y += ((pointer.pos.y - a.pos.y) * 0.001) / Math.sqrt(size + 1);
     a.vel.add(wind);
     a.vel.mul(1 - 0.1 / Math.sqrt(size + 1));
     particle.emit(
@@ -114,6 +115,25 @@ async function ship(
           s.remove();
         });
       }
+    }
+  });
+}
+
+async function star(a: Actor) {
+  a.pos.set(random.get(99), random.get(99));
+  a.vel.set(0, random.get(0.1, 0.5));
+  const g = new PIXI.Graphics();
+  g.beginFill(
+    (random.getInt(100, 250) << 16) |
+      (random.getInt(100, 250) << 8) |
+      random.getInt(100, 250)
+  );
+  g.drawRect(0, 0, 1, 1);
+  g.endFill();
+  a.setGraphics(g);
+  a.addUpdater(() => {
+    if (a.pos.y > 99) {
+      a.pos.y -= 99;
     }
   });
 }
