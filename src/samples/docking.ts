@@ -3,19 +3,11 @@ import * as ppe from "particle-pattern-emitter";
 import * as sss from "sounds-some-sounds";
 import { spawn, addUpdater, reset, AnyActor, pool } from "..";
 import { Actor } from "./util/pixi/actor";
-import {
-  init,
-  endGame,
-  random,
-  ticks,
-  difficulty,
-  isUsingKeyboard
-} from "./util/game";
+import { init, endGame, random } from "./util/game";
 import * as screen from "./util/pixi/screen";
 import * as particle from "./util/pixi/particle";
 import { text } from "./util/pixi/text";
 import * as pointer from "./util/pointer";
-import * as keyboard from "./util/keyboard";
 import Vector from "./util/vector";
 import { range } from "./util/math";
 
