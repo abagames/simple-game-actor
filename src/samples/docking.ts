@@ -49,11 +49,11 @@ async function ship(a: Actor, size = 0, isPlayer = false) {
   } else {
     a.pos.set(50, 90);
   }
-  const shipStr = range(3 + (size % 2)).map(
+  const shipStr = range(4 + (size % 2)).map(
     i =>
-      `${range(size + 2 - i)
+      `${range(size + 3 - i)
         .map(() => " ")
-        .join("")}${range(i + 1 + (size + (size % 2)) * 2)
+        .join("")}${range(i + 2 + (size + (size % 2)) * 2)
         .map(() => "-")
         .join("")}`
   );
