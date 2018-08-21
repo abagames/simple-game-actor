@@ -1,7 +1,7 @@
 import * as sss from "sounds-some-sounds";
 import * as pag from "pixel-art-gen";
 import * as ppe from "particle-pattern-emitter";
-import { spawn, addUpdater, reset } from "..";
+import { spawn, addUpdater, reset, AnyActor } from "..";
 import { Actor } from "./util/pixi/actor";
 import {
   init,
@@ -20,11 +20,12 @@ import Vector from "./util/vector";
 import { range } from "./util/math";
 
 let wind = new Vector();
+let topShip: AnyActor;
 
 init({
   game: () => {
     spawn(ship, 0, true);
-    spawn(ship, 1);
+    topShip = spawn(ship, 1);
     addUpdater(() => {
       wind.x += random.get(-0.02, 0.02);
       wind.y += random.get(-0.01, 0.01);
@@ -43,7 +44,12 @@ init({
   isDebugMode: true
 });
 
-async function ship(a: Actor, size = 0, isPlayer = false) {
+async function ship(
+  a: Actor,
+  size = 0,
+  isPlayer = false,
+  dockedShip: AnyActor = null
+) {
   if (isPlayer) {
     a.pos.set(50, 20);
   } else {
@@ -64,14 +70,26 @@ async function ship(a: Actor, size = 0, isPlayer = false) {
   a.setImage(images[0]);
   if (isPlayer) {
     a.addUpdater(() => {
-      a.vel.x += (pointer.pos.x - a.pos.x) * 0.0025;
-      a.vel.y += (pointer.pos.y - a.pos.y) * 0.005;
+      if (dockedShip != null) {
+        a.pos.set(dockedShip.pos.x, dockedShip.pos.y - dockedShip.size.y * 0.7);
+        return;
+      }
+      a.vel.x += ((pointer.pos.x - a.pos.x) * 0.0025) / Math.sqrt(size + 1);
+      a.vel.y += ((pointer.pos.y - a.pos.y) * 0.005) / Math.sqrt(size + 1);
       a.vel.add(wind);
-      a.vel.mul(0.9);
+      a.vel.mul(1 - 0.1 / Math.sqrt(size + 1));
       particle.emit("j_p", a.pos.x, a.pos.y, Math.PI / 2 + a.vel.x * 0.05, {
         sizeScale: 0.5 + size * (0.5 - a.vel.y),
         countScale: 1 - a.vel.y
       });
+      if (a.getColliding(ship)) {
+        if (Math.abs(a.pos.x - 50) < 5) {
+          dockedShip = topShip;
+        } else {
+          particle.emit("e_p", a.pos.x, a.pos.y, 0, { sizeScale: size + 1 });
+          a.remove();
+        }
+      }
     });
   }
 }
