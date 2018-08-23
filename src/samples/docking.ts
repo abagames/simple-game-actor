@@ -21,13 +21,13 @@ let fuelText: AnyActor;
 let gameOverText: AnyActor;
 
 init({
-  title: () => {
+  title: async () => {
     if (gameOverText != null) {
       gameOverText.remove();
     } else {
       range(50).forEach(() => spawn(star));
     }
-    spawn(titleBoard);
+    await spawn(titleBoard);
     spawn(text, "CLICK/TAP TO START").pos.set(50, 60);
   },
   game: () => {
@@ -59,7 +59,7 @@ init({
   init: () => {
     pag.setSeed(7);
     ppe.setSeed(2);
-    sss.setSeed(129);
+    sss.setSeed(234);
   },
   screen: screen,
   actorClass: Actor
@@ -98,6 +98,16 @@ async function ship(
       a.pos.set(dockedShip.pos.x, dockedShip.pos.y - dockedShip.size.y * 0.7);
       return;
     }
+    particle.emit(
+      `j_s_${size}`,
+      a.pos.x,
+      a.pos.y + a.size.y / 2,
+      Math.PI / 2 + a.vel.x * 0.05,
+      {
+        sizeScale: 0.5 + size * (0.5 - a.vel.y),
+        countScale: 1 - a.vel.y
+      }
+    );
     if (a.targetMoveTicks > 0) {
       a.pos.x += (a.targetPos.x - a.pos.x) / a.targetMoveTicks;
       a.pos.y += (a.targetPos.y - a.pos.y) / a.targetMoveTicks;
@@ -117,16 +127,6 @@ async function ship(
       removeAllShips();
       return;
     }
-    particle.emit(
-      `j_s_${size}`,
-      a.pos.x,
-      a.pos.y + a.size.y / 2,
-      Math.PI / 2 + a.vel.x * 0.05,
-      {
-        sizeScale: 0.5 + size * (0.5 - a.vel.y),
-        countScale: 1 - a.vel.y
-      }
-    );
     if (a.getColliding(ship)) {
       if (Math.abs(a.pos.x - 50) < 5) {
         addScore(a.pos, fuel, size + 1);
@@ -138,7 +138,7 @@ async function ship(
         topShip.targetMoveTicks = 30;
         topShip = spawn(ship, size + 2);
         fuel = startFuel;
-        sss.playJingle("l_d", false, undefined, 4);
+        sss.playJingle("l_sdk", false, undefined, 4);
       } else {
         removeAllShips();
       }
