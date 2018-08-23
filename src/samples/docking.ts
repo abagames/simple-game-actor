@@ -21,14 +21,14 @@ let fuelText: AnyActor;
 let gameOverText: AnyActor;
 
 init({
-  title: async () => {
+  title: () => {
     if (gameOverText != null) {
       gameOverText.remove();
     } else {
       range(50).forEach(() => spawn(star));
     }
-    await spawn(titleBoard);
     spawn(text, "CLICK/TAP TO START").pos.set(50, 60);
+    spawn(titleBoard);
   },
   game: () => {
     reset();
@@ -134,9 +134,9 @@ async function ship(
         a.isPlayer = false;
         a.collider = null;
         topShip.isPlayer = true;
-        topShip.targetPos.set(50, 20);
+        topShip.targetPos.set(50, size < 15 ? 20 : -50);
         topShip.targetMoveTicks = 30;
-        topShip = spawn(ship, size + 2);
+        topShip = size < 15 ? spawn(ship, size + 2) : null;
         fuel = startFuel;
         sss.playJingle("l_sdk", false, undefined, 4);
       } else {
@@ -192,6 +192,7 @@ function addScore(pos: Vector, _score, multiplier = 1) {
 }
 
 async function titleBoard(a: Actor) {
+  a.pos.set(50, 25);
   const images = await pag.generateImagesPromise("DOCKING", {
     isUsingLetterForm: true,
     letterWidthRatio: 0.6,
@@ -200,5 +201,4 @@ async function titleBoard(a: Actor) {
     letterFormChar: "*"
   });
   a.setImage(images[0]);
-  a.pos.set(50, 25);
 }
