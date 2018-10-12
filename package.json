@@ -6,24 +6,26 @@
   "typings": "typings/index.d.ts",
   "devDependencies": {
     "@types/pixi.js": "^4.8.0",
-    "awesome-typescript-loader": "^5.2.0",
+    "cross-conf-env": "^1.1.2",
     "gif-capture-canvas": "^1.0.1",
-    "html-webpack-plugin": "^3.2.0",
+    "parcel-bundler": "^1.10.3",
+    "parcel-plugin-clean-dist": "0.0.6",
     "particle-pattern-emitter": "^1.0.2",
     "pixel-art-gen": "^1.1.2",
     "pixel-perfect-collider": "^1.0.1",
     "pixi-filters": "^2.6.1",
     "pixi.js": "^4.8.1",
     "sounds-some-sounds": "^1.0.5",
-    "typescript": "^3.0.1",
-    "webpack": "^4.17.0",
-    "webpack-cli": "^3.1.0",
-    "webpack-serve": "^2.0.2"
+    "typescript": "^3.1.3"
+  },
+  "config": {
+    "sample": "docking"
   },
   "scripts": {
-    "start": "webpack-serve --content docs",
-    "build": "webpack",
-    "build_sample": "webpack --env.sample"
+    "start": "cross-conf-env parcel src/samples/%npm_package_config_sample%/index.html -d tmp",
+    "build": "cross-conf-env parcel build src/samples/%npm_package_config_sample%/index.html -d docs/samples/%npm_package_config_sample% --no-source-maps --public-url ./",
+    "build_lib": "parcel build src/index.ts -d build --no-source-maps --global sga",
+    "build_typings": "tsc --declaration --emitDeclarationOnly --declarationDir typings src/index.ts"
   },
   "author": "abagames",
   "license": "MIT",

@@ -6,15 +6,15 @@ Simple actor and actor pool for game objects.
 
 ## Demo
 
-[BOARD SURF](https://abagames.github.io/simple-game-actor/index.html?surf)
-([code](https://github.com/abagames/simple-game-actor/blob/master/src/samples/surf.ts))
+[BOARD SURF](https://abagames.github.io/simple-game-actor/samples/surf/index.html)
+([code](https://github.com/abagames/simple-game-actor/blob/master/src/samples/surf/index.ts))
 
-[![surf screenshot](https://abagames.github.io/simple-game-actor/surf.gif)](https://abagames.github.io/simple-game-actor/index.html?surf)
+[![surf screenshot](https://abagames.github.io/simple-game-actor/screenshots/surf.gif)](https://abagames.github.io/simple-game-actor/samples/surf/index.html)
 
-[DOCKING](https://abagames.github.io/simple-game-actor/index.html?docking)
-([code](https://github.com/abagames/simple-game-actor/blob/master/src/samples/docking.ts))
+[DOCKING](https://abagames.github.io/simple-game-actor/samples/docking/index.html)
+([code](https://github.com/abagames/simple-game-actor/blob/master/src/samples/docking/index.ts))
 
-[![docking screenshot](https://abagames.github.io/simple-game-actor/docking.gif)](https://abagames.github.io/simple-game-actor/index.html?docking)
+[![docking screenshot](https://abagames.github.io/simple-game-actor/screenshots/docking.gif)](https://abagames.github.io/simple-game-actor/samples/docking/index.html)
 
 ## How to use
 
@@ -37,7 +37,7 @@ and set it with the `sga.setActorClass` function.
 sga.setActorClass(Actor);
 ```
 
-Define the function to initialize the actor, ([surf.ts](https://github.com/abagames/simple-game-actor/blob/master/src/samples/surf.ts))
+Define the function to initialize the actor, ([surf.ts](https://github.com/abagames/simple-game-actor/blob/master/src/samples/surf/index.ts))
 
 ```typescript
 function wall(a: Actor & { score: number }, x, y, vx, vy, width) {

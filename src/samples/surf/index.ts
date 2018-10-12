@@ -1,6 +1,6 @@
 import * as sss from "sounds-some-sounds";
-import { spawn, addUpdater, reset } from "..";
-import { Actor, Rect } from "./util/canvas/actor";
+import { spawn, addUpdater, reset } from "../..";
+import { Actor, Rect } from "../util/canvas/actor";
 import {
   init,
   endGame,
@@ -8,13 +8,13 @@ import {
   ticks,
   difficulty,
   isUsingKeyboard
-} from "./util/game";
-import * as screen from "./util/canvas/screen";
-import * as text from "./util/canvas/text";
-import * as pointer from "./util/pointer";
-import * as keyboard from "./util/keyboard";
-import Vector from "./util/vector";
-import * as math from "./util/math";
+} from "../util/game";
+import * as screen from "../util/canvas/screen";
+import * as text from "../util/canvas/text";
+import * as pointer from "../util/pointer";
+import * as keyboard from "../util/keyboard";
+import Vector from "../util/vector";
+import * as math from "../util/math";
 
 let score = 0;
 let gameOverUpdater;
@@ -59,6 +59,7 @@ init({
   },
   init: () => {
     sss.setSeed(2);
+    document.title = "BOARD SURF";
   },
   screen: screen,
   actorClass: Actor
