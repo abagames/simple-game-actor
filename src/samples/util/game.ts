@@ -19,8 +19,9 @@ let beginGameOverFunc: Function;
 let beginTitleFunc: Function;
 let scene: "title" | "game" | "gameOver";
 let _screen;
-
-const isCapturing = false;
+let isUpdating = false;
+let _isCapturing = false;
+let _isUsingSSS = false;
 
 export function init({
   title,
@@ -29,7 +30,9 @@ export function init({
   init,
   screen,
   actorClass,
-  isDebugMode = false
+  isDebugMode = false,
+  isCapturing = false,
+  isUsingSSS = false
 }: {
   title?: Function;
   game?: Function;
@@ -38,11 +41,16 @@ export function init({
   screen: any;
   actorClass?: any;
   isDebugMode?: boolean;
+  isCapturing?: boolean;
+  isUsingSSS?: boolean;
 }) {
   beginTitleFunc = title;
   beginGameFunc = game;
   beginGameOverFunc = gameOver;
-  sss.init();
+  _isUsingSSS = isUsingSSS;
+  if (_isUsingSSS) {
+    sss.init();
+  }
   _screen = screen;
   screen.init();
   letterPattern.init();
@@ -50,8 +58,8 @@ export function init({
     screen.canvas,
     new Vector(screen.size),
     new Vector(screen.padding),
-    sss.playEmpty,
-    sss.resumeAudioContext,
+    _isUsingSSS ? sss.playEmpty : null,
+    _isUsingSSS ? sss.resumeAudioContext : null,
     isDebugMode
   );
   if (enableKeyboard) {
@@ -60,24 +68,27 @@ export function init({
   if (actorClass != null) {
     sga.setActorClass(actorClass);
   }
-  if (isCapturing) {
+  sga.reset();
+  _isCapturing = isCapturing;
+  if (_isCapturing) {
     gcc.setOptions({ scale: 1 });
   }
-  window.addEventListener("load", () => {
-    if (init != null) {
-      init();
-    }
+  if (init != null) {
+    init();
+  }
+  if (isDebugMode) {
+    beginGame();
+  } else {
     if (beginTitleFunc != null) {
       beginTitle();
     } else {
-      if (isDebugMode) {
-        beginGame();
-      } else {
-        endGame();
-      }
+      endGame();
     }
+  }
+  if (!isUpdating) {
     update();
-  });
+    isUpdating = true;
+  }
 }
 
 export function endGame() {
@@ -90,7 +101,9 @@ export function endGame() {
 
 function update() {
   requestAnimationFrame(update);
-  sss.update();
+  if (_isUsingSSS) {
+    sss.update();
+  }
   pointer.update();
   if (enableKeyboard) {
     keyboard.update();
@@ -99,7 +112,7 @@ function update() {
   sga.update();
   updateScene();
   ticks++;
-  if (isCapturing) {
+  if (_isCapturing) {
     gcc.capture(_screen.canvas);
   }
 }

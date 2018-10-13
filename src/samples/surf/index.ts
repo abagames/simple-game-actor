@@ -62,7 +62,8 @@ init({
     document.title = "BOARD SURF";
   },
   screen: screen,
-  actorClass: Actor
+  actorClass: Actor,
+  isUsingSSS: true
   //isDebugMode: true
 });
 

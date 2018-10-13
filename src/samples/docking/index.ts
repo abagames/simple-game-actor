@@ -62,7 +62,8 @@ init({
     sss.setSeed(234);
   },
   screen: screen,
-  actorClass: Actor
+  actorClass: Actor,
+  isUsingSSS: true
 });
 
 function ship(
