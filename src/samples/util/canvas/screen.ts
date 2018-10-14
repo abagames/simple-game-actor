@@ -6,6 +6,9 @@ export let canvas: HTMLCanvasElement;
 export let context: CanvasRenderingContext2D;
 
 export function init() {
+  if (canvas != null) {
+    return;
+  }
   canvas = document.createElement("canvas");
   canvas.width = canvas.height = size * pixelRatio;
   context = canvas.getContext("2d");

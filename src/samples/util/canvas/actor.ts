@@ -24,11 +24,12 @@ export class Actor extends sga.Actor {
       offset?: { x?: number; y?: number };
     } = {}
   ) {
-    this.addRect(new Rect(width, height, { color, offset }));
+    return this.addRect(new Rect(width, height, { color, offset }));
   }
 
   addRect(rect: Rect) {
     this.rects.push(rect);
+    return rect;
   }
 
   testColliding(other: Actor) {
@@ -58,7 +59,7 @@ export class Actor extends sga.Actor {
     }
     this.stepBackVector.normalize().div(2);
     let isColliding = false;
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < 99; i++) {
       this.rects.forEach(r => {
         r.updatePos(this.pos);
       });
@@ -80,9 +81,7 @@ export class Actor extends sga.Actor {
   update() {
     this.prevPos.set(this.pos);
     this.pos.add(this.vel);
-    this.rects.forEach(r => {
-      r.update(this.pos, this.angle);
-    });
+    this.updateRects();
     super.update();
     if (
       this.pos.x < -screen.size * removePaddingRatio ||
@@ -92,6 +91,12 @@ export class Actor extends sga.Actor {
     ) {
       this.remove();
     }
+  }
+
+  updateRects() {
+    this.rects.forEach(r => {
+      r.update(this.pos, this.angle);
+    });
   }
 }
 
@@ -104,6 +109,7 @@ export class Rect {
   springAnchor = new Vector();
   vel = new Vector();
   currentOffset = new Vector();
+  partOffset = new Vector();
   springOffset = new Vector();
   isFirstFrame = true;
 
@@ -144,12 +150,15 @@ export class Rect {
           .rotate(angle)
           .add(pos);
       }
-      this.springOffset
+      this.partOffset
         .set(this.offset)
         .rotate(angle)
         .add(pos)
         .sub(this.pos);
-      this.vel.add(this.springOffset.mul(this.springRatio));
+      this.springOffset.set(this.partOffset).mul(this.springRatio);
+      this.partOffset.mul(1 - this.springRatio);
+      this.pos.add(this.partOffset);
+      this.vel.add(this.springOffset.mul(0.1));
       this.vel.mul(0.9);
       this.pos.add(this.vel);
       this.currentOffset.set(this.pos).sub(pos);

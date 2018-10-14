@@ -32,7 +32,9 @@ export function init({
   actorClass,
   isDebugMode = false,
   isCapturing = false,
-  isUsingSSS = false
+  isUsingSSS = false,
+  onTouchStart = null,
+  onPointerUp = null
 }: {
   title?: Function;
   game?: Function;
@@ -43,6 +45,8 @@ export function init({
   isDebugMode?: boolean;
   isCapturing?: boolean;
   isUsingSSS?: boolean;
+  onTouchStart?: Function;
+  onPointerUp?: Function;
 }) {
   beginTitleFunc = title;
   beginGameFunc = game;
@@ -58,8 +62,8 @@ export function init({
     screen.canvas,
     new Vector(screen.size),
     new Vector(screen.padding),
-    _isUsingSSS ? sss.playEmpty : null,
-    _isUsingSSS ? sss.resumeAudioContext : null,
+    _isUsingSSS ? sss.playEmpty : onTouchStart,
+    _isUsingSSS ? sss.resumeAudioContext : onPointerUp,
     isDebugMode
   );
   if (enableKeyboard) {
