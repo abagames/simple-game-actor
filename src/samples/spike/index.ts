@@ -13,6 +13,7 @@ let gameOverUpdater;
 let wallY = 0;
 let targetScrollY = 0;
 let _player;
+let introTicks = 300;
 
 init({
   game: () => {
@@ -25,6 +26,10 @@ init({
     wallY = targetScrollY = 0;
     addUpdater(() => {
       text.draw(`${score}`, 1, 1, { align: "left" });
+      if (introTicks > 0) {
+        text.draw("[MOUSE][SLIDE]\nMOVE UP/DOWN", 5, 10, { align: "left" });
+        introTicks--;
+      }
     });
   },
   gameOver: () => {

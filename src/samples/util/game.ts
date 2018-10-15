@@ -75,7 +75,7 @@ export function init({
   sga.reset();
   _isCapturing = isCapturing;
   if (_isCapturing) {
-    gcc.setOptions({ scale: 1 });
+    gcc.setOptions({ scale: 1, capturingFps: 60 });
   }
   if (init != null) {
     init();
