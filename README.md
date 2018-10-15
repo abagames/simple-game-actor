@@ -16,6 +16,11 @@ Simple actor and actor pool for game objects.
 
 [![docking screenshot](https://abagames.github.io/simple-game-actor/screenshots/docking.gif)](https://abagames.github.io/simple-game-actor/samples/docking/index.html)
 
+[SPIKE SIDE](https://abagames.github.io/simple-game-actor/samples/spike/index.html)
+([code](https://github.com/abagames/simple-game-actor/blob/master/src/samples/spike/index.ts))
+
+[![spike screenshot](https://abagames.github.io/simple-game-actor/screenshots/spike.gif)](https://abagames.github.io/simple-game-actor/samples/spike/index.html)
+
 ## How to use
 
 Create your own Actor class by extending sga(simple-game-actor).Actor class, ([actor.ts](https://github.com/abagames/simple-game-actor/blob/master/src/samples/util/canvas/actor.ts))
