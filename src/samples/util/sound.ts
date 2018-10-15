@@ -5,8 +5,6 @@ import { range } from "./math";
 const win: any = window;
 win.AudioContext = win.AudioContext || win.webkitAudioContext;
 const audioContext = new AudioContext();
-let isAudioContextResumed = false;
-let isEmptyPlayed = false;
 let instruments = {};
 
 export function loadInstrument(name) {
@@ -34,6 +32,9 @@ export function play(
   index: number,
   count = 1
 ) {
+  if (audioContext == null) {
+    return;
+  }
   const inst = instruments[instrumentName];
   if (inst == null) {
     return;
@@ -48,9 +49,8 @@ export function play(
 }
 
 export function resumeAudioContext() {
-  if (isAudioContextResumed) {
+  if (audioContext == null || audioContext.state !== "suspended") {
     return;
   }
   audioContext.resume();
-  isAudioContextResumed = true;
 }
