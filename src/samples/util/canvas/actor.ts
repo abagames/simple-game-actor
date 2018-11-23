@@ -1,6 +1,7 @@
 import * as sga from "../../..";
 import * as screen from "./screen";
 import Vector from "../vector";
+import { range } from "../math";
 
 const removePaddingRatio = 0.5;
 
@@ -10,6 +11,7 @@ export class Actor extends sga.Actor {
   vel = new Vector();
   speed = 0;
   angle = 0;
+  speedVel = new Vector();
   rects: Rect[] = [];
   stepBackVector = new Vector();
 
@@ -30,6 +32,50 @@ export class Actor extends sga.Actor {
   addRect(rect: Rect) {
     this.rects.push(rect);
     return rect;
+  }
+
+  addRectWithSquares(
+    width = 5,
+    height = 5,
+    {
+      color = "black",
+      offset = { x: 0, y: 0 }
+    }: {
+      color?: string;
+      offset?: { x?: number; y?: number };
+    } = {}
+  ) {
+    let sn;
+    let ss;
+    let sx = 0;
+    let sy = 0;
+    let svx = 0;
+    let svy = 0;
+    if (width > height) {
+      sn = Math.ceil(width / height);
+      ss = height;
+      sx = -width / 2 + ss / 2;
+      svx = (width - ss) / (sn - 1);
+    } else {
+      sn = Math.ceil(height / width);
+      ss = width;
+      sx = -height / 2 + ss / 2;
+      svx = (height - ss) / (sn - 1);
+    }
+    range(sn).forEach(() => {
+      this.addRect(
+        new Rect(ss, ss, {
+          color,
+          offset: { x: sx + offset.x, y: sy + offset.y }
+        })
+      );
+      sx += svx;
+      sy += svy;
+    });
+  }
+
+  clearRects() {
+    this.rects = [];
   }
 
   testColliding(other: Actor) {
@@ -81,6 +127,8 @@ export class Actor extends sga.Actor {
   update() {
     this.prevPos.set(this.pos);
     this.pos.add(this.vel);
+    this.speedVel.set(this.speed, 0).rotate(this.angle);
+    this.pos.add(this.speedVel);
     this.updateRects();
     super.update();
     if (

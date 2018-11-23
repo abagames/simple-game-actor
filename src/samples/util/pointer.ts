@@ -84,12 +84,15 @@ export function update() {
     return;
   }
   calcPointerPos(cursorPos.x, cursorPos.y, pos);
+  const pp = isPressed;
   if (isDebugMode && !pos.isInRect(0, 0, pixelSize.x, pixelSize.y)) {
     updateDebug();
     pos.set(debugPos);
     isDown = debugIsDown;
+    if (!pp && isDown) {
+      isClicked = true;
+    }
   }
-  const pp = isPressed;
   isPressed = isDown;
   isJustPressed = !pp && isClicked;
   isClicked = false;
