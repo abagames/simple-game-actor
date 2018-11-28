@@ -10,14 +10,14 @@ import * as sound from "../util/sound";
 
 let score = 0;
 let gameOverUpdater;
-let _player;
 let introTicks = 300;
 
 init({
   game: () => {
     reset();
     score = 0;
-    _player = spawn(player);
+    math.range(5).map(_ => spawn(player));
+    math.range(10).map(_ => spawn(enemy));
     addUpdater(() => {
       text.draw(`${score}`, 1, 1, { align: "left" });
       if (introTicks > 0) {
@@ -53,9 +53,18 @@ init({
 });
 
 function player(a: Actor) {
-  a.setRect(5, 5);
-  a.addRectWithSquares(10, 3, { offset: { x: -4 } });
-  a.pos.set(50, 50);
+  tadpole(a, "black");
+}
+
+function enemy(a: Actor) {
+  tadpole(a, "coral");
+}
+
+function tadpole(a: Actor, color: string) {
+  a.setRect(5, 5, { color });
+  a.addRectWithSquares(10, 3, { offset: { x: -4 }, color });
+  a.pos.set(random.get(20, 80), random.get(20, 80));
+  a.angle = random.get(Math.PI * 2);
   let forwardTicks = 0;
   a.addUpdater(() => {
     a.angle += 0.02;
