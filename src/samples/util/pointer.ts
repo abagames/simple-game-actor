@@ -38,6 +38,9 @@ export function init(
     _pixelSize.x + _padding.x * 2,
     _pixelSize.y + _padding.y * 2
   );
+  if (isInitialized) {
+    return;
+  }
   padding = _padding;
   onPointerUp = _onPointerUp;
   isDebugMode = _isDebugMode;
