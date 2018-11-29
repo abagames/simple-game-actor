@@ -45,8 +45,8 @@ export class Actor extends sga.Actor {
       offset?: { x?: number; y?: number };
     } = {}
   ) {
-    let sn;
-    let ss;
+    let sn: number;
+    let ss: number;
     let sx = 0;
     let sy = 0;
     let svx = 0;
@@ -66,7 +66,7 @@ export class Actor extends sga.Actor {
       this.addRect(
         new Rect(ss, ss, {
           color,
-          offset: { x: sx + offset.x, y: sy + offset.y }
+          offset: { x: sx + (offset.x || 0), y: sy + (offset.y || 0) }
         })
       );
       sx += svx;
@@ -97,7 +97,7 @@ export class Actor extends sga.Actor {
     return false;
   }
 
-  stepBack(funcOrActor?: Function | Actor, angleVector?: Vector) {
+  stepBack(funcOrActor: Function | Actor, angleVector?: Vector) {
     if (angleVector == null) {
       this.stepBackVector.set(this.prevPos).sub(this.pos);
     } else {
@@ -153,7 +153,7 @@ export class Rect {
   size = new Vector(5);
   color = "black";
   offset = new Vector();
-  springRatio: number = null;
+  springRatio: number | undefined;
   springAnchor = new Vector();
   vel = new Vector();
   currentOffset = new Vector();

@@ -18,7 +18,7 @@ let isInitialized = false;
 let padding: Vector;
 let prevPos = new Vector();
 let isResettingTargetPos = false;
-let onPointerUp: Function;
+let onPointerUp: Function | undefined;
 let isDebugMode = false;
 let debugRandom = new Random();
 let debugPos = new Vector();
@@ -29,8 +29,8 @@ export function init(
   _screen: HTMLElement,
   _pixelSize: Vector,
   _padding: Vector = new Vector(),
-  onTouchStart: Function = null,
-  _onPointerUp: Function = null,
+  onTouchStart?: Function,
+  _onPointerUp?: Function,
   _isDebugMode = false
 ) {
   screen = _screen;
@@ -127,7 +127,7 @@ export function setTargetPos(v: Vector) {
   targetPos.set(v);
 }
 
-function calcPointerPos(x, y, v) {
+function calcPointerPos(x: number, y: number, v: Vector) {
   v.x =
     ((x - screen.offsetLeft) / screen.clientWidth + 0.5) * pixelSize.x -
     padding.x;
@@ -136,19 +136,19 @@ function calcPointerPos(x, y, v) {
     padding.y;
 }
 
-function onDown(x, y) {
+function onDown(x: number, y: number) {
   cursorPos.set(x, y);
   isDown = isClicked = true;
 }
 
-function onMove(x, y) {
+function onMove(x: number, y: number) {
   cursorPos.set(x, y);
   if (!isDown) {
     isResettingTargetPos = true;
   }
 }
 
-function onUp(e) {
+function onUp(e: Event) {
   isDown = false;
   if (onPointerUp != null) {
     onPointerUp();

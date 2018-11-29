@@ -11,7 +11,7 @@ export let padding: number;
 export let canvas: HTMLCanvasElement;
 
 export function init(
-  onBeforeParticleContainer,
+  onBeforeParticleContainer: Function,
   _size = 100,
   _padding = 10,
   backgroundColor = 0x111111,

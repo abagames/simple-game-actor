@@ -14,11 +14,11 @@ export let isUsingKeyboard = false;
 
 const difficultyDoubledSecond = 30;
 const enableKeyboard = false;
-let beginGameFunc: Function;
-let beginGameOverFunc: Function;
-let beginTitleFunc: Function;
+let beginGameFunc: Function | undefined;
+let beginGameOverFunc: Function | undefined;
+let beginTitleFunc: Function | undefined;
 let scene: "title" | "game" | "gameOver";
-let _screen;
+let _screen: any;
 let isUpdating = false;
 let _isCapturing = false;
 let _isUsingSSS = false;
@@ -33,8 +33,8 @@ export function init({
   isDebugMode = false,
   isCapturing = false,
   isUsingSSS = false,
-  onTouchStart = null,
-  onPointerUp = null
+  onTouchStart = undefined,
+  onPointerUp = undefined
 }: {
   title?: Function;
   game?: Function;
@@ -45,8 +45,8 @@ export function init({
   isDebugMode?: boolean;
   isCapturing?: boolean;
   isUsingSSS?: boolean;
-  onTouchStart?: Function;
-  onPointerUp?: Function;
+  onTouchStart?: Function | undefined;
+  onPointerUp?: Function | undefined;
 }) {
   beginTitleFunc = title;
   beginGameFunc = game;
@@ -147,5 +147,7 @@ function beginTitle() {
 function beginGame() {
   scene = "game";
   ticks = 0;
-  beginGameFunc();
+  if (beginGameFunc != null) {
+    beginGameFunc();
+  }
 }

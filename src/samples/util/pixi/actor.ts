@@ -14,8 +14,8 @@ export class Actor extends sga.Actor {
   speed = 0;
   angle = 0;
   size = new Vector();
-  sprite: PIXI.Sprite;
-  collider: Collider;
+  sprite: PIXI.Sprite | undefined;
+  collider: Collider | undefined;
   colliderCache: { [key: string]: Collider } = {};
 
   setImage(image: HTMLImageElement, hasCollider = true) {

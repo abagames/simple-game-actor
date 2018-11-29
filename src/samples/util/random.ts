@@ -1,14 +1,14 @@
 export default class Random {
-  x: number;
-  y: number;
-  z: number;
-  w: number;
+  x!: number;
+  y!: number;
+  z!: number;
+  w!: number;
 
   constructor() {
     this.setSeed();
   }
 
-  get(lowOrHigh: number = 1, high: number = null) {
+  get(lowOrHigh: number = 1, high?: number) {
     if (high == null) {
       high = lowOrHigh;
       lowOrHigh = 0;
@@ -16,7 +16,7 @@ export default class Random {
     return (this.next() / 0xffffffff) * (high - lowOrHigh) + lowOrHigh;
   }
 
-  getInt(lowOrHigh: number, high: number = null) {
+  getInt(lowOrHigh: number, high?: number) {
     if (high == null) {
       high = lowOrHigh;
       lowOrHigh = 0;
@@ -33,7 +33,7 @@ export default class Random {
   }
 
   setSeed(
-    w: number = null,
+    w?: number,
     x = 123456789,
     y = 362436069,
     z = 521288629,

@@ -1,5 +1,5 @@
-export let dotPatterns;
-export let charToIndex;
+export let dotPatterns: { x: number; y: number }[][];
+export let charToIndex: number[];
 
 export function init() {
   let p = 0;

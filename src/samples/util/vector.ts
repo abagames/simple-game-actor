@@ -4,11 +4,11 @@ export default class Vector {
   x = 0;
   y = 0;
 
-  constructor(x: number | Vector = 0, y: number = null) {
+  constructor(x: number | Vector = 0, y?: number) {
     this.set(x, y);
   }
 
-  set(x: number | Vector, y: number = null) {
+  set(x: number | Vector, y?: number) {
     if (x instanceof Vector) {
       this.x = x.x;
       this.y = x.y;
@@ -77,7 +77,7 @@ export default class Vector {
     return this;
   }
 
-  getAngle(to: Vector = null) {
+  getAngle(to?: Vector) {
     return to == null
       ? Math.atan2(this.y, this.x)
       : Math.atan2(to.y - this.y, to.x - this.x);

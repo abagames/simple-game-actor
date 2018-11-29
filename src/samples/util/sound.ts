@@ -1,33 +1,40 @@
+// @ts-ignore
 import { transpose, scale, Scale } from "tonal";
+// @ts-ignore
 import * as Soundfont from "soundfont-player";
 import { range } from "./math";
 
 const win: any = window;
 win.AudioContext = win.AudioContext || win.webkitAudioContext;
 const audioContext = new AudioContext();
-let instruments = {};
+let instruments: { [s: string]: any } = {};
 
-export function loadInstrument(name) {
+export function loadInstrument(name: string) {
   Soundfont.instrument(audioContext, name, {
     soundfont: "FluidR3_GM"
-  }).then(inst => {
+  }).then((inst: any) => {
     instruments[name] = inst;
   });
 }
 
-export function getNotes(_scale, baseNote, octaveFrom, octaveTo) {
+export function getNotes(
+  _scale: string,
+  baseNote: string,
+  octaveFrom: number,
+  octaveTo: number
+) {
   return Array.prototype.concat.apply(
     [],
     range(octaveTo - octaveFrom + 1).map(oi =>
       scale(_scale)
         .map(transpose(`${baseNote}${octaveFrom + oi}`))
-        .filter((_, i) => i % 2 === 0)
+        .filter((_: any, i: number) => i % 2 === 0)
     )
   );
 }
 
 export function play(
-  instrumentName,
+  instrumentName: string,
   notes: string[],
   index: number,
   count = 1

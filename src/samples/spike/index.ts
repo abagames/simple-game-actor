@@ -1,4 +1,4 @@
-import { spawn, addUpdater, reset, pool } from "../..";
+import { spawn, addUpdater, reset, pool, Updater } from "../..";
 import { Actor, Rect } from "../util/canvas/actor";
 import { init, endGame, random, ticks, difficulty } from "../util/game";
 import * as screen from "../util/canvas/screen";
@@ -9,10 +9,10 @@ import * as math from "../util/math";
 import * as sound from "../util/sound";
 
 let score = 0;
-let gameOverUpdater;
+let gameOverUpdater: Updater;
 let wallY = 0;
 let targetScrollY = 0;
-let _player;
+let _player: any;
 let introTicks = 300;
 
 init({
@@ -20,7 +20,7 @@ init({
     reset();
     score = 0;
     spawn(targetPointer);
-    _player = spawn(player);
+    _player = spawn(player) as Actor;
     spawn(wall, 20);
     spawn(wall, 80);
     wallY = targetScrollY = 0;
@@ -158,7 +158,7 @@ function targetPointer(a: Actor) {
 }
 
 function scroll(y: number) {
-  pool.get().forEach((a: Actor) => {
+  pool.get().forEach((a: any) => {
     a.pos.y += y;
   });
   wallY += y;

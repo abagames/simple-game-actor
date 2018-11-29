@@ -1,24 +1,24 @@
 import * as pag from "pixel-art-gen";
 import * as ppe from "particle-pattern-emitter";
 import * as sss from "sounds-some-sounds";
-import { spawn, addUpdater, reset, AnyActor, pool } from "../..";
+import { spawn, addUpdater, reset, pool, AnyActor } from "../..";
 import { Actor } from "../util/pixi/actor";
 import { init, endGame, random } from "../util/game";
 import * as screen from "../util/pixi/screen";
 import * as particle from "../util/pixi/particle";
-import { text } from "../util/pixi/text";
+import { text, Text } from "../util/pixi/text";
 import * as pointer from "../util/pointer";
 import Vector from "../util/vector";
 import { range } from "../util/math";
 
 let wind = new Vector();
-let topShip: AnyActor;
+let topShip: AnyActor | undefined;
 let score: number;
-let scoreText: AnyActor;
+let scoreText: Text;
 const startFuel = 360;
 let fuel: number;
-let fuelText: AnyActor;
-let gameOverText: AnyActor;
+let fuelText: Text;
+let gameOverText: Text;
 
 init({
   title: () => {
@@ -71,7 +71,7 @@ function ship(
   size = 0,
   isPlayer = false
 ) {
-  let dockedShip: AnyActor = null;
+  let dockedShip: AnyActor;
   a.pos.set(50, 120);
   a.targetPos = new Vector(50, isPlayer ? 20 : 90);
   a.targetMoveTicks = 30;
@@ -134,15 +134,15 @@ function ship(
           return;
         }
         if (a.getColliding(ship)) {
-          if (Math.abs(a.pos.x - 50) < 5) {
+          if (Math.abs(a.pos.x - 50) < 5 && topShip != null) {
             addScore(a.pos, fuel, size + 1);
             dockedShip = topShip;
             a.isPlayer = false;
-            a.collider = null;
+            a.collider = undefined;
             topShip.isPlayer = true;
             topShip.targetPos.set(50, size < 15 ? 20 : -50);
             topShip.targetMoveTicks = 30;
-            topShip = size < 15 ? spawn(ship, size + 2) : null;
+            topShip = size < 15 ? spawn(ship, size + 2) : undefined;
             fuel = startFuel;
             sss.playJingle("l_sdk", false, undefined, 4);
           } else {
@@ -181,7 +181,7 @@ function star(a: Actor) {
   });
 }
 
-function addScore(pos: Vector, _score, multiplier = 1) {
+function addScore(pos: Vector, _score: number, multiplier = 1) {
   score += _score * multiplier;
   scoreText.setText(`${score}`, { align: "left" });
   const a = spawn(

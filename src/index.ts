@@ -1,10 +1,10 @@
 export class Actor {
   pool = pool;
-  func: Function;
+  func!: Function;
   isAlive = true;
   ticks = 0;
   updaterPool = new Pool();
-  onRemove: Function;
+  onRemove: Function | undefined;
   priority = 1;
 
   remove() {
@@ -18,10 +18,10 @@ export class Actor {
   }
 
   addUpdater(
-    updateFunc: (updater: Updater, actor: AnyActor) => void,
+    updateFunc: (updater: Updater, actor?: Actor) => void,
     interval = 1
   ) {
-    const updater = new Updater(updateFunc, interval, this);
+    const updater: Updater = new Updater(updateFunc, interval, this);
     this.updaterPool.add(updater);
     return updater;
   }
@@ -35,7 +35,7 @@ export class Actor {
     this.pool.enablePriority();
   }
 
-  init(initFunc: (actor: AnyActor, ...args) => void, ...args) {
+  init(initFunc: (actor: any, ...args: any[]) => void, ...args: any[]) {
     this.func = initFunc;
     initFunc(this, ...args);
     this.pool.add(this);
@@ -66,9 +66,9 @@ export class Updater {
   }
 
   constructor(
-    public updateFunc: (updater: Updater, actor: AnyActor) => void,
+    public updateFunc: (updater: Updater, actor?: Actor) => void,
     public interval: number,
-    public actor: AnyActor
+    public actor?: Actor
   ) {
     this.func = updateFunc;
   }
@@ -104,7 +104,7 @@ export class Pool {
     if (this.isPriorityEnabled) {
       this.instances = stableSort(
         this.instances,
-        (a, b) => b.priority - a.priority
+        (a: any, b: any) => b.priority - a.priority
       );
     }
     for (let i = 0; i < this.instances.length; ) {
@@ -145,19 +145,22 @@ export class Pool {
 
 export const pool = new Pool();
 export const updaterPool = new Pool();
-let actorClass = Actor;
+let actorClass: any = Actor;
 
-export function spawn(initFunc: (actor: AnyActor, ...args) => void, ...args) {
-  const actor: AnyActor = new actorClass();
+export function spawn(
+  initFunc: (actor: any, ...args: any[]) => void,
+  ...args: any[]
+) {
+  const actor = new actorClass();
   actor.init(initFunc, ...args);
   return actor;
 }
 
 export function addUpdater(
-  updateFunc: (updater: Updater, actor: AnyActor) => void,
+  updateFunc: (updater: Updater, actor?: Actor) => void,
   interval = 1
 ) {
-  const updater = new Updater(updateFunc, interval, null);
+  const updater = new Updater(updateFunc, interval);
   updaterPool.add(updater);
   return updater;
 }
@@ -172,7 +175,7 @@ export function reset() {
   updaterPool.removeAll();
 }
 
-export function setActorClass(_actorClass) {
+export function setActorClass(_actorClass: any) {
   actorClass = _actorClass;
 }
 

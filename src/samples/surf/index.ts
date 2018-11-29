@@ -1,5 +1,5 @@
 import * as sss from "sounds-some-sounds";
-import { spawn, addUpdater, reset } from "../..";
+import { spawn, addUpdater, reset, Updater } from "../..";
 import { Actor, Rect } from "../util/canvas/actor";
 import {
   init,
@@ -17,7 +17,7 @@ import Vector from "../util/vector";
 import * as math from "../util/math";
 
 let score = 0;
-let gameOverUpdater;
+let gameOverUpdater: Updater;
 
 init({
   game: () => {
@@ -151,7 +151,14 @@ function player(
   });
 }
 
-function wall(a: Actor & { score: number }, x, y, vx, vy, width) {
+function wall(
+  a: Actor & { score: number },
+  x: number,
+  y: number,
+  vx: number,
+  vy: number,
+  width: number
+) {
   a.setRect(width, 8);
   a.pos.set(x, y);
   a.vel.set(vx, vy);
@@ -168,7 +175,7 @@ function wall(a: Actor & { score: number }, x, y, vx, vy, width) {
   });
 }
 
-function scoreBoard(a: Actor, pos, _score) {
+function scoreBoard(a: Actor, pos: Vector, _score: number) {
   score += _score;
   a.pos.set(pos);
   a.vel.y = -1;

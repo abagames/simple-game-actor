@@ -3,8 +3,12 @@ import { dotPatterns, charToIndex } from "../letterPattern";
 
 let textureCache: { [key: string]: PIXI.Texture } = {};
 
+export interface Text extends Actor {
+  setText: Function;
+}
+
 export function text(
-  a: Actor & { setText: Function },
+  a: Text,
   str: string,
   {
     align = "center",
@@ -30,8 +34,10 @@ export function text(
   ) => {
     const texture = drawToTexture(str, { align, style, scale });
     a.setTextureToSprite(texture);
-    a.sprite.anchor.x = align === "left" ? 0 : align === "center" ? 0.5 : 1;
-    a.sprite.anchor.y = 0;
+    if (a.sprite != null) {
+      a.sprite.anchor.x = align === "left" ? 0 : align === "center" ? 0.5 : 1;
+      a.sprite.anchor.y = 0;
+    }
   };
   a.setText(str, { align, style, scale });
 }
@@ -39,9 +45,9 @@ export function text(
 function drawToTexture(
   str: string,
   {
-    align,
-    style,
-    scale
+    align = "center",
+    style = "white",
+    scale = 1
   }: {
     align?: "center" | "left" | "right";
     style?: string;
@@ -64,7 +70,7 @@ function drawToTexture(
   });
   canvas.width = Math.ceil(lx / 2) * 2;
   canvas.height = ly;
-  const context = canvas.getContext("2d");
+  const context = canvas.getContext("2d") as CanvasRenderingContext2D;
   context.clearRect(0, 0, lx, ly);
   ly = 0;
   lines.forEach(l => {

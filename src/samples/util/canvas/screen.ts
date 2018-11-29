@@ -11,7 +11,7 @@ export function init() {
   }
   canvas = document.createElement("canvas");
   canvas.width = canvas.height = size * pixelRatio;
-  context = canvas.getContext("2d");
+  context = canvas.getContext("2d") as CanvasRenderingContext2D;
   document.body.appendChild(canvas);
 }
 
