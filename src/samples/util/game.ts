@@ -96,6 +96,9 @@ export function init({
 }
 
 export function endGame() {
+  if (scene !== "game") {
+    return;
+  }
   if (beginGameOverFunc != null) {
     beginGameOverFunc();
   }
