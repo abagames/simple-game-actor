@@ -59,8 +59,8 @@ export class Actor extends sga.Actor {
     } else {
       sn = Math.ceil(height / width);
       ss = width;
-      sx = -height / 2 + ss / 2;
-      svx = (height - ss) / (sn - 1);
+      sy = -height / 2 + ss / 2;
+      svy = (height - ss) / (sn - 1);
     }
     range(sn).forEach(() => {
       this.addRect(
@@ -95,6 +95,20 @@ export class Actor extends sga.Actor {
       }
     }
     return false;
+  }
+
+  getNearest(func?: Function) {
+    const actors = this.pool.get(func) as Actor[];
+    let dist = 999;
+    let nearest: Actor | false = false;
+    for (let a of actors) {
+      let d = this.pos.distanceTo(a.pos);
+      if (d < dist) {
+        dist = d;
+        nearest = a;
+      }
+    }
+    return nearest;
   }
 
   stepBack(funcOrActor: Function | Actor, angleVector?: Vector) {
