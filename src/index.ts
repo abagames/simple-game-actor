@@ -126,8 +126,8 @@ export class Pool {
 
   get(func?: Function) {
     return func == null
-      ? this.instances
-      : this.instances.filter(a => a.func === func);
+      ? this.instances.filter(a => a.isAlive)
+      : this.instances.filter(a => a.func === func && a.isAlive);
   }
 
   removeAll() {
