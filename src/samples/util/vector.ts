@@ -1,4 +1,4 @@
-import { clamp, isInRange } from "./math";
+import { clamp, isInRange, wrap } from "./math";
 
 export default class Vector {
   x = 0;
@@ -46,6 +46,12 @@ export default class Vector {
   clamp(xLow: number, xHigh: number, yLow: number, yHigh: number) {
     this.x = clamp(this.x, xLow, xHigh);
     this.y = clamp(this.y, yLow, yHigh);
+    return this;
+  }
+
+  wrap(xLow: number, xHigh: number, yLow: number, yHigh: number) {
+    this.x = wrap(this.x, xLow, xHigh);
+    this.y = wrap(this.y, yLow, yHigh);
     return this;
   }
 
